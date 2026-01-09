@@ -14,6 +14,7 @@ internal static class Win32
     internal const int WsExToolWindow = 0x00000080;
 
     internal const int WmHotkey = 0x0312;
+    internal const int WmDpichanged = 0x02E0;
 
     internal const uint ModAlt = 0x0001;
     internal const uint ModControl = 0x0002;
@@ -39,6 +40,79 @@ internal static class Win32
 
     [DllImport("user32.dll", SetLastError = true)]
     internal static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern bool GetWindowRect(IntPtr hWnd, out Rect lpRect);
+
+    [DllImport("user32.dll")]
+    internal static extern uint GetDpiForWindow(IntPtr hWnd);
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Rect
+    {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+
+        public int Width => Right - Left;
+        public int Height => Bottom - Top;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct MonitorInfo
+    {
+        public int CbSize;
+        public Rect RcMonitor;
+        public Rect RcWork;
+        public uint DwFlags;
+    }
+
+    internal delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, IntPtr lprcMonitor, IntPtr dwData);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumProc lpfnEnum, IntPtr dwData);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
+
+    internal enum MonitorDpiType
+    {
+        EffectiveDpi = 0,
+        AngularDpi = 1,
+        RawDpi = 2,
+        Default = EffectiveDpi,
+    }
+
+    [DllImport("shcore.dll")]
+    private static extern int GetDpiForMonitor(IntPtr hmonitor, MonitorDpiType dpiType, out uint dpiX, out uint dpiY);
+
+    internal static bool TryGetMonitorBounds(IntPtr hMonitor, out Rect bounds)
+    {
+        var info = new MonitorInfo { CbSize = Marshal.SizeOf<MonitorInfo>() };
+        if (!GetMonitorInfo(hMonitor, ref info))
+        {
+            bounds = default;
+            return false;
+        }
+
+        bounds = info.RcMonitor;
+        return true;
+    }
+
+    internal static bool TryGetMonitorDpi(IntPtr hMonitor, out uint dpiX, out uint dpiY)
+    {
+        // shcore GetDpiForMonitor returns HRESULT.
+        var hr = GetDpiForMonitor(hMonitor, MonitorDpiType.EffectiveDpi, out dpiX, out dpiY);
+        if (hr == 0 && dpiX != 0 && dpiY != 0)
+        {
+            return true;
+        }
+
+        dpiX = 96;
+        dpiY = 96;
+        return false;
+    }
 
     internal static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
     {

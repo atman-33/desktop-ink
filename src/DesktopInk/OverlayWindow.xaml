@@ -5,12 +5,12 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True"
-        Background="Transparent"
+        Background="#01000000"
         Topmost="True"
         ShowInTaskbar="False"
         WindowStartupLocation="Manual">
-    <Grid x:Name="Root" Background="Transparent">
-        <Canvas x:Name="StrokeCanvas" Background="Transparent"/>
+    <Grid x:Name="Root" Background="#01000000">
+        <Canvas x:Name="StrokeCanvas" Background="#01000000"/>
 
         <Border x:Name="IndicatorHost"
                 HorizontalAlignment="Left"

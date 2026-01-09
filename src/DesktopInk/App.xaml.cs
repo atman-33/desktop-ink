@@ -16,6 +16,8 @@ public partial class App : System.Windows.Application
 
 		ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
+		AppLog.Info($"Startup cwd='{Environment.CurrentDirectory}' args='{string.Join(' ', e.Args)}'");
+
 		_overlayManager = new OverlayManager();
 		_overlayManager.ShowOverlays();
 
@@ -25,6 +27,7 @@ public partial class App : System.Windows.Application
 
 	protected override void OnExit(ExitEventArgs e)
 	{
+		AppLog.Info("Exit");
 		_controlWindow?.Close();
 		_controlWindow = null;
 

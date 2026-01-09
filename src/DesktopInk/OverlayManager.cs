@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Microsoft.Win32;
 
 namespace DesktopInk;
 
@@ -9,19 +10,61 @@ public sealed class OverlayManager : IDisposable
 {
     private readonly List<OverlayWindow> _overlays = new();
     private OverlayMode _mode = OverlayMode.PassThrough;
+    private bool _isDisposed;
 
     public void ShowOverlays()
     {
-        if (_overlays.Count > 0)
+        if (_overlays.Count == 0)
+        {
+            SystemEvents.DisplaySettingsChanged += OnDisplaySettingsChanged;
+        }
+
+        RefreshOverlays();
+    }
+
+    private void OnDisplaySettingsChanged(object? sender, EventArgs e)
+    {
+        if (_isDisposed)
         {
             return;
         }
 
-        // Use WinForms Screen enumeration for multi-monitor bounds.
-        foreach (var screen in System.Windows.Forms.Screen.AllScreens)
+        // Ensure we refresh on the UI thread.
+        _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(RefreshOverlays);
+    }
+
+    private void RefreshOverlays()
+    {
+        if (_isDisposed)
         {
-            var bounds = screen.Bounds;
-            var overlay = new OverlayWindow(bounds.Left, bounds.Top, bounds.Width, bounds.Height);
+            return;
+        }
+
+        try
+        {
+            var monitors = MonitorEnumerator.GetMonitors();
+            AppLog.Info($"RefreshOverlays monitors={monitors.Count} mode={_mode}");
+            foreach (var m in monitors)
+            {
+                AppLog.Info($"Monitor hmon=0x{m.HMonitor.ToInt64():X} boundsPx=({m.BoundsPx.Left},{m.BoundsPx.Top}) {m.BoundsPx.Width}x{m.BoundsPx.Height} dpi=({m.DpiX},{m.DpiY})");
+            }
+        }
+        catch (Exception ex)
+        {
+            AppLog.Error("RefreshOverlays monitor enumeration failed", ex);
+        }
+
+        // Simple, robust approach: rebuild overlays from current OS monitor topology.
+        foreach (var overlay in _overlays.ToList())
+        {
+            overlay.Close();
+        }
+
+        _overlays.Clear();
+
+        foreach (var monitor in MonitorEnumerator.GetMonitors())
+        {
+            var overlay = new OverlayWindow(monitor.BoundsPx, monitor.DpiX, monitor.DpiY);
             overlay.SetMode(_mode);
             overlay.Show();
             _overlays.Add(overlay);
@@ -59,6 +102,15 @@ public sealed class OverlayManager : IDisposable
 
     public void Dispose()
     {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        _isDisposed = true;
+
+        SystemEvents.DisplaySettingsChanged -= OnDisplaySettingsChanged;
+
         foreach (var overlay in _overlays.ToList())
         {
             overlay.Close();
