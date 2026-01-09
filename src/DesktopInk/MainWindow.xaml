@@ -1,0 +1,33 @@
+﻿<Window x:Class="DesktopInk.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesktopInk"
+        mc:Ignorable="d"
+        Title="DesktopInk"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual">
+    <Grid x:Name="Root" Background="Transparent">
+        <Canvas x:Name="StrokeCanvas" Background="Transparent"/>
+
+        <Border x:Name="IndicatorHost"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="12"
+                CornerRadius="4"
+                Background="#AA000000"
+                Padding="8,4"
+                Visibility="Collapsed">
+            <TextBlock Text="DRAW"
+                       Foreground="#FFFF3B3B"
+                       FontWeight="SemiBold"
+                       FontSize="14"/>
+        </Border>
+    </Grid>
+</Window>
