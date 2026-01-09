@@ -130,6 +130,19 @@ public partial class OverlayWindow : Window
 
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
+        if (msg == Win32.WmMouseActivate)
+        {
+            // In draw mode we want to receive pointer input, but we do not want to steal activation
+            // from the control palette or underlying apps.
+            if (_mode == OverlayMode.Draw)
+            {
+                handled = true;
+                return new IntPtr(Win32.MaNoActivate);
+            }
+
+            return IntPtr.Zero;
+        }
+
         if (msg != Win32.WmDpichanged)
         {
             return IntPtr.Zero;

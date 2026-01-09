@@ -14,7 +14,10 @@ internal static class Win32
     internal const int WsExToolWindow = 0x00000080;
 
     internal const int WmHotkey = 0x0312;
+    internal const int WmMouseActivate = 0x0021;
     internal const int WmDpichanged = 0x02E0;
+
+    internal const int MaNoActivate = 3;
 
     internal const uint ModAlt = 0x0001;
     internal const uint ModControl = 0x0002;
