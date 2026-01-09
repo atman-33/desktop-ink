@@ -5,6 +5,8 @@ namespace DesktopInk;
 
 internal static class Win32
 {
+    internal static readonly IntPtr HwndTopmost = new(-1);
+
     internal const int GwlExStyle = -20;
 
     internal const int WsExTransparent = 0x00000020;
@@ -15,6 +17,22 @@ internal static class Win32
 
     internal const uint ModAlt = 0x0001;
     internal const uint ModControl = 0x0002;
+
+    internal const uint SwpNoSize = 0x0001;
+    internal const uint SwpNoMove = 0x0002;
+    internal const uint SwpNoZOrder = 0x0004;
+    internal const uint SwpNoActivate = 0x0010;
+    internal const uint SwpFrameChanged = 0x0020;
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern bool SetWindowPos(
+        IntPtr hWnd,
+        IntPtr hWndInsertAfter,
+        int x,
+        int y,
+        int cx,
+        int cy,
+        uint uFlags);
 
     [DllImport("user32.dll", SetLastError = true)]
     internal static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);

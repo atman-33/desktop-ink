@@ -53,7 +53,7 @@ public partial class MainWindow : Window
 
         if (!TryRegisterHotkeys())
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "Failed to register one or more global hotkeys. Another application may already be using them.\n\nThe app will now exit.",
                 "DesktopInk",
                 MessageBoxButton.OK,
@@ -221,7 +221,7 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
-    private void OnMouseMove(object sender, MouseEventArgs e)
+    private void OnMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
     {
         if (_mode != OverlayMode.Draw || !_isDrawing || _activeStroke is null)
         {
@@ -266,7 +266,7 @@ public partial class MainWindow : Window
     {
         return new Polyline
         {
-            Stroke = Brushes.Red,
+            Stroke = System.Windows.Media.Brushes.Red,
             StrokeThickness = 3,
             StrokeStartLineCap = PenLineCap.Round,
             StrokeEndLineCap = PenLineCap.Round,

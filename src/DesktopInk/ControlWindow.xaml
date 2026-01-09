@@ -1,0 +1,21 @@
+<Window x:Class="DesktopInk.ControlWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DesktopInk.Controls"
+        Width="56"
+        Height="160"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual">
+    <Border Background="#AA000000" CornerRadius="10" Padding="8" Opacity="0.85">
+        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button x:Name="ToggleButton" Content="D" Width="36" Height="36" Margin="0,0,0,8" Click="OnToggleClick" ToolTip="Toggle Draw (Ctrl+Alt+D)"/>
+            <Button Content="C" Width="36" Height="36" Margin="0,0,0,8" Click="OnClearClick" ToolTip="Clear (Ctrl+Alt+C)"/>
+            <Button Content="Q" Width="36" Height="36" Click="OnQuitClick" ToolTip="Quit (Ctrl+Alt+Q)"/>
+        </StackPanel>
+    </Border>
+</Window>
