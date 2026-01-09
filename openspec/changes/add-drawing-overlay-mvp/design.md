@@ -55,6 +55,16 @@ Use a simple retained-mode model:
 - Click-through behavior can be sensitive to window style details and composition; must be verified on Windows 10 and 11.
 - Global hotkeys can fail if already registered by another app; required behavior is currently an open question.
 
+## Implementation Notes (Post-Validation)
+
+### Hit-testing with fully transparent visuals
+In practice, an overlay that uses `AllowsTransparency="True"` and a fully transparent background (e.g., `Background="Transparent"`) can exhibit surprising input behavior: pointer hit-testing may only occur over non-fully-transparent pixels (for example, an on-screen indicator), while the rest of the window appears to ignore input.
+
+Mitigation used in this repo:
+- Use a *nearly transparent* background color (e.g., `#01000000`) for the window/root/canvas. This is visually indistinguishable from transparent, but makes the entire surface reliably hit-testable in draw mode.
+
+This mitigation is compatible with the existing Win32 click-through strategy (toggling `WS_EX_TRANSPARENT`), and preserves the pass-through invariant.
+
 ## Validation Notes
 Manual validation must emphasize:
 - Pass-through never blocks underlying input.

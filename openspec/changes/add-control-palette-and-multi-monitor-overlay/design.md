@@ -39,3 +39,16 @@ Rationale:
 ## Risks
 - DPI differences per monitor can cause sizing/position issues; per-monitor windows reduce, but do not eliminate, this risk.
 - Pass-through correctness must be verified on all monitors.
+
+## Implementation Notes (Post-Validation)
+
+### Transparent overlays and input hit-testing
+During validation we observed a failure mode where drawing only worked near the visible "DRAW" indicator area, while the rest of the overlay did not receive mouse input.
+
+Root cause:
+- With `AllowsTransparency="True"` and fully transparent backgrounds, hit-testing can effectively behave like "only non-transparent pixels are interactive".
+
+Mitigation:
+- Use a nearly transparent background (`#01000000`) on the window/root/canvas so the entire overlay becomes reliably hit-testable in draw mode.
+
+This keeps pass-through mode intact (Win32 `WS_EX_TRANSPARENT` still routes input to underlying apps) while restoring full-surface input in draw mode.
