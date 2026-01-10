@@ -8,6 +8,20 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Assets\app-icon.ico</ApplicationIcon>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>DesktopInk</Product>
+    <Company>atman-33</Company>
+    <Copyright>Copyright © 2026</Copyright>
+  </PropertyGroup>
+
+  <!-- Publish Configuration for Self-Contained Single File -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' And '$(RuntimeIdentifier)' != ''">
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishTrimmed>false</PublishTrimmed>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>
