@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Run tests
+      run: dotnet test --configuration Release --verbosity normal
+      
+    - name: Get version from tag
+      id: get_version
+      shell: pwsh
+      run: |
+        $version = "${{ github.ref_name }}" -replace '^v', ''
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        echo "Version: $version"
+        
+    - name: Build self-contained version
+      run: |
+        dotnet publish src/DesktopInk/DesktopInk.csproj `
+          --configuration Release `
+          --runtime win-x64 `
+          --self-contained true `
+          --output publish/win-x64-self-contained `
+          -p:PublishSingleFile=true `
+          -p:PublishReadyToRun=true `
+          -p:IncludeNativeLibrariesForSelfExtract=true `
+          -p:DebugType=none `
+          -p:DebugSymbols=false
+          
+    - name: Build framework-dependent version
+      run: |
+        dotnet publish src/DesktopInk/DesktopInk.csproj `
+          --configuration Release `
+          --runtime win-x64 `
+          --self-contained false `
+          --output publish/win-x64-framework `
+          -p:PublishSingleFile=true `
+          -p:PublishReadyToRun=true `
+          -p:DebugType=none `
+          -p:DebugSymbols=false
+          
+    - name: Rename executables
+      shell: pwsh
+      run: |
+        $version = "${{ steps.get_version.outputs.VERSION }}"
+        Copy-Item "publish/win-x64-self-contained/DesktopInk.exe" `
+          "publish/DesktopInk-v$version-win-x64.exe"
+        Copy-Item "publish/win-x64-framework/DesktopInk.exe" `
+          "publish/DesktopInk-v$version-win-x64-framework.exe"
+          
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          publish/DesktopInk-v${{ steps.get_version.outputs.VERSION }}-win-x64.exe
+          publish/DesktopInk-v${{ steps.get_version.outputs.VERSION }}-win-x64-framework.exe
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

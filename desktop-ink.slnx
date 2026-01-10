@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DesktopInk/DesktopInk.csproj" />
+    <Project Path="src/DesktopInk.Tests/DesktopInk.Tests.csproj" />
+  </Folder>
+</Solution>

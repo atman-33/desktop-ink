@@ -1,1 +1,28 @@
 .tmp/
+.tmp/.serena-skills/
+.claude/
+
+# .NET / MSBuild
+**/bin/
+**/obj/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+TestResults/
+BenchmarkDotNet.Artifacts/
+
+# Publish outputs
+**/publish/
+**/AppPackages/
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+Desktop.ini

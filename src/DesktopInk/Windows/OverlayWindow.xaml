@@ -1,0 +1,30 @@
+<Window x:Class="DesktopInk.Windows.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DesktopInk.Overlay"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="#01000000"
+        Topmost="True"
+        ShowInTaskbar="False"
+        WindowStartupLocation="Manual">
+    <Grid x:Name="Root" Background="#01000000">
+        <Canvas x:Name="StrokeCanvas" Background="#01000000"/>
+
+        <Border x:Name="IndicatorHost"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Margin="12"
+                CornerRadius="4"
+                Background="#AA000000"
+                Padding="8,4"
+                Visibility="Collapsed">
+            <TextBlock x:Name="IndicatorText"
+                       Text="DRAW"
+                       Foreground="#FFFF3B3B"
+                       FontWeight="SemiBold"
+                       FontSize="14"/>
+        </Border>
+    </Grid>
+</Window>
