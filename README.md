@@ -120,6 +120,12 @@ Desktop Ink is built using WPF and consists of:
 - **Keyboard Hook Manager**: Low-level keyboard hook for global hotkeys and temporary mode detection
 - **Overlay Manager**: Manages multi-monitor overlay lifecycle
 
+## Development
+
+For contributors and maintainers:
+
+- [Release Process](docs/RELEASE.md) - Version management and release workflow
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
