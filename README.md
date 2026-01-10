@@ -2,6 +2,10 @@
 
 A lightweight, always-on-top drawing overlay application for Windows that allows you to annotate your screen with ink strokes.
 
+## Screenshot
+
+![Desktop Ink Overview](docs/images/screenshot-overview.png)
+
 ## Features
 
 - **Multi-Monitor Support**: Works seamlessly across multiple displays
