@@ -8,4 +8,3 @@ dotnet build desktop-ink.slnx -c Debug %*
 dotnet build desktop-ink.slnx -c Release %*
 
 popd
-pause

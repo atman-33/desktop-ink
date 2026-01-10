@@ -13,6 +13,8 @@ public sealed class OverlayManager : IDisposable
     private bool _isTemporaryDrawMode;
     private bool _isDisposed;
 
+    public event EventHandler<OverlayMode>? ModeChanged;
+
     public void ShowOverlays()
     {
         if (_overlays.Count == 0)
@@ -85,6 +87,8 @@ public sealed class OverlayManager : IDisposable
         {
             overlay.SetMode(GetEffectiveMode(), _isTemporaryDrawMode);
         }
+
+        ModeChanged?.Invoke(this, GetEffectiveMode());
     }
 
     public void ActivateTemporaryDrawMode()
@@ -101,6 +105,8 @@ public sealed class OverlayManager : IDisposable
         {
             overlay.SetMode(OverlayMode.Draw, isTemporary: true);
         }
+
+        ModeChanged?.Invoke(this, OverlayMode.Draw);
     }
 
     public void DeactivateTemporaryDrawMode()
@@ -121,6 +127,8 @@ public sealed class OverlayManager : IDisposable
         {
             overlay.SetMode(_mode, isTemporary: false);
         }
+
+        ModeChanged?.Invoke(this, _mode);
     }
 
     private OverlayMode GetEffectiveMode()

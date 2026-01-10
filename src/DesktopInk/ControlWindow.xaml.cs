@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace DesktopInk;
 
@@ -23,6 +24,9 @@ public partial class ControlWindow : Window
         _keyboardHook = new KeyboardHookManager();
 
         InitializeComponent();
+
+        // Subscribe to mode changes for visual feedback
+        _overlayManager.ModeChanged += OnModeChanged;
 
         SourceInitialized += OnSourceInitialized;
         Closed += OnClosed;
@@ -141,6 +145,8 @@ public partial class ControlWindow : Window
     {
         UnregisterHotkeys();
 
+        _overlayManager.ModeChanged -= OnModeChanged;
+
         _keyboardHook.TemporaryModeActivated -= OnTemporaryModeActivated;
         _keyboardHook.TemporaryModeDeactivated -= OnTemporaryModeDeactivated;
         _keyboardHook.Dispose();
@@ -191,6 +197,26 @@ public partial class ControlWindow : Window
     private void OnToggleClick(object sender, RoutedEventArgs e)
     {
         _overlayManager.ToggleMode();
+    }
+
+    private void OnModeChanged(object? sender, OverlayMode mode)
+    {
+        UpdateToggleButtonAppearance(mode);
+    }
+
+    private void UpdateToggleButtonAppearance(OverlayMode mode)
+    {
+        // Update button appearance based on current mode
+        if (mode == OverlayMode.Draw)
+        {
+            // Active state: Windows accent blue for professional appearance
+            ToggleButton.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(220, 0, 120, 212)); // Windows Blue (#0078D4) with high opacity
+        }
+        else
+        {
+            // Inactive state: default transparent
+            ToggleButton.Background = System.Windows.Media.Brushes.Transparent;
+        }
     }
 
     private void OnClearClick(object sender, RoutedEventArgs e)

@@ -1,47 +1,47 @@
 # Implementation Tasks
 
 ## 1. Icon Resource Selection
-- [ ] Select appropriate SVG icon sources (Fluent UI System Icons or Material Design Icons)
-- [ ] Extract SVG Path data for pen/pencil icon (draw mode)
-- [ ] Extract SVG Path data for eraser or trash bin icon (clear)
-- [ ] Extract SVG Path data for close × icon (quit)
-- [ ] Verify icon licenses are compatible (MIT, Apache 2.0, or CC BY 4.0)
+- [x] Select appropriate SVG icon sources (Fluent UI System Icons or Material Design Icons)
+- [x] Extract SVG Path data for pen/pencil icon (draw mode)
+- [x] Extract SVG Path data for eraser or trash bin icon (clear)
+- [x] Extract SVG Path data for close × icon (quit)
+- [x] Verify icon licenses are compatible (MIT, Apache 2.0, or CC BY 4.0)
 
 ## 2. XAML Implementation
-- [ ] Update `ControlWindow.xaml` to replace button Content with Viewbox + Path elements
-- [ ] Implement pen/pencil icon for ToggleButton (draw mode)
-- [ ] Implement eraser/trash bin icon for Clear button
-- [ ] Implement close × icon for Quit button
-- [ ] Set Viewbox dimensions (20×20px recommended)
-- [ ] Configure Path Fill color to White for visibility on dark background
-- [ ] Ensure Stretch="Uniform" for proper scaling
+- [x] Update `ControlWindow.xaml` to replace button Content with Viewbox + Path elements
+- [x] Implement pen/pencil icon for ToggleButton (draw mode)
+- [x] Implement eraser/trash bin icon for Clear button
+- [x] Implement close × icon for Quit button
+- [x] Set Viewbox dimensions (20×20px recommended)
+- [x] Configure Path Fill color to White for visibility on dark background
+- [x] Ensure Stretch="Uniform" for proper scaling
 
 ## 3. Visual State Management
-- [ ] Implement visual state feedback for draw mode toggle button
-- [ ] Add Style or Trigger to change appearance when draw mode is active
-- [ ] Test color change or highlight effect for active state (e.g., green, blue, or brighter shade)
-- [ ] Ensure state changes are synchronized with `_overlayManager.CurrentMode`
+- [x] Implement visual state feedback for draw mode toggle button
+- [x] Add Style or Trigger to change appearance when draw mode is active
+- [x] Test color change or highlight effect for active state (e.g., green, blue, or brighter shade)
+- [x] Ensure state changes are synchronized with `_overlayManager.CurrentMode`
 
 ## 4. Testing
-- [ ] Verify all three icons render correctly on startup
-- [ ] Test draw mode toggle button shows correct state (active/inactive)
-- [ ] Verify icons are clearly visible against dark background (#AA000000)
-- [ ] Test icons remain clear at default palette size (56×160px window)
-- [ ] Verify no pixelation or rendering artifacts
-- [ ] Confirm tooltips still function correctly with icon content
+- [x] Verify all three icons render correctly on startup
+- [x] Test draw mode toggle button shows correct state (active/inactive)
+- [x] Verify icons are clearly visible against dark background (#AA000000)
+- [x] Test icons remain clear at default palette size (56×160px window)
+- [x] Verify no pixelation or rendering artifacts
+- [x] Confirm tooltips still function correctly with icon content
 - [ ] Test on high DPI displays to ensure vector scaling works properly
 - [ ] Verify hover and click interactions remain responsive
 
 ## 5. Code Review
-- [ ] Review XAML for consistency and maintainability
-- [ ] Ensure no hardcoded values that should be configurable
-- [ ] Verify accessibility (tooltips provide text alternatives for icons)
-- [ ] Document icon sources and licenses in code comments
+- [x] Review XAML for consistency and maintainability
+- [x] Ensure no hardcoded values that should be configurable
+- [x] Verify accessibility (tooltips provide text alternatives for icons)
+- [x] Document icon sources and licenses in code comments
 
 ## 6. Documentation
-- [ ] Update relevant comments in `ControlWindow.xaml` to reference icon implementation
-- [ ] Document icon design choices (which icons were selected and why)
-- [ ] Note icon sources and license information
+- [x] Update relevant comments in `ControlWindow.xaml` to reference icon implementation
+- [x] Document icon design choices (which icons were selected and why)
+- [x] Note icon sources and license information
 
 ## Implementation Notes
 

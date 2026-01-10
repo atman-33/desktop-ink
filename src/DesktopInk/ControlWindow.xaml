@@ -11,11 +11,74 @@
         Topmost="True"
         ShowInTaskbar="False"
         WindowStartupLocation="Manual">
+    <Window.Resources>
+        <Style x:Key="IconButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#33FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#CCFFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#EEFFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="IconPathStyle" TargetType="Path">
+            <Setter Property="Fill" Value="White"/>
+            <Setter Property="Stretch" Value="Uniform"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=IsMouseOver}" Value="True">
+                    <Setter Property="Fill" Value="Black"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Border Background="#AA000000" CornerRadius="10" Padding="8" Opacity="0.85">
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Button x:Name="ToggleButton" Content="D" Width="36" Height="36" Margin="0,0,0,8" Click="OnToggleClick" ToolTip="Toggle Draw (Win+Shift+D)"/>
-            <Button Content="C" Width="36" Height="36" Margin="0,0,0,8" Click="OnClearClick" ToolTip="Clear (Win+Shift+C)"/>
-            <Button Content="Q" Width="36" Height="36" Click="OnQuitClick" ToolTip="Quit (Win+Shift+Q)"/>
+            <!-- Draw Mode Toggle Button - Pen Icon (Material Design edit icon) -->
+            <Button x:Name="ToggleButton" Width="36" Height="36" Margin="0,0,0,8" 
+                    Style="{StaticResource IconButtonStyle}"
+                    Click="OnToggleClick" ToolTip="Toggle Draw (Win+Shift+D)">
+                <Viewbox Width="20" Height="20">
+                    <Path x:Name="TogglePath" 
+                          Data="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" 
+                          Style="{StaticResource IconPathStyle}"/>
+                </Viewbox>
+            </Button>
+            
+            <!-- Clear Button - Eraser Icon -->
+            <Button Width="36" Height="36" Margin="0,0,0,8" 
+                    Style="{StaticResource IconButtonStyle}"
+                    Click="OnClearClick" ToolTip="Clear (Win+Shift+C)">
+                <Viewbox Width="20" Height="20">
+                    <Path Data="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0zM4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l3.53-3.53-4.95-4.95-4.95 4.95z" 
+                          Style="{StaticResource IconPathStyle}"/>
+                </Viewbox>
+            </Button>
+            
+            <!-- Quit Button - Close Icon (Material Design close icon) -->
+            <Button Width="36" Height="36" 
+                    Style="{StaticResource IconButtonStyle}"
+                    Click="OnQuitClick" ToolTip="Quit (Win+Shift+Q)">
+                <Viewbox Width="20" Height="20">
+                    <Path Data="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" 
+                          Style="{StaticResource IconPathStyle}"/>
+                </Viewbox>
+            </Button>
         </StackPanel>
     </Border>
 </Window>
