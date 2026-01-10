@@ -208,17 +208,9 @@ public partial class ControlWindow : Window
 
     private void UpdateToggleButtonAppearance(OverlayMode mode)
     {
-        // Update button appearance based on current mode
-        if (mode == OverlayMode.Draw)
-        {
-            // Active state: Windows accent blue for professional appearance
-            ToggleButton.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(220, 0, 120, 212)); // Windows Blue (#0078D4) with high opacity
-        }
-        else
-        {
-            // Inactive state: default transparent
-            ToggleButton.Background = System.Windows.Media.Brushes.Transparent;
-        }
+        // Update button appearance based on current mode using Tag property
+        // This allows XAML style triggers to work properly for hover effects
+        ToggleButton.Tag = mode.ToString();
     }
 
     private void OnClearClick(object sender, RoutedEventArgs e)

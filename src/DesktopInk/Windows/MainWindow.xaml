@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DesktopInk"
         mc:Ignorable="d"
         Title="DesktopInk"
+        Icon="/Assets/app-icon.ico"
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True"
