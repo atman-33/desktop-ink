@@ -28,6 +28,8 @@ The icons SHALL be rendered using WPF Path elements with vector geometry for res
 - **THEN** the icons maintain proper proportions and clarity
 - **AND** no pixelation or distortion occurs
 
+## ADDED Requirements
+
 ### Requirement: Icon specifications
 The system SHALL implement icons with the following specifications:
 - Icon size: 20×20px within 36×36px button area
@@ -53,8 +55,6 @@ The system SHALL implement icons with the following specifications:
 - **WHEN** the user views the button
 - **THEN** the icon resembles a close symbol (×)
 - **AND** the icon clearly communicates the exit function
-
-## ADDED Requirements
 
 ### Requirement: Visual state feedback for draw mode toggle
 The draw mode toggle button SHALL provide distinct visual feedback for its active and inactive states through color or appearance changes.
