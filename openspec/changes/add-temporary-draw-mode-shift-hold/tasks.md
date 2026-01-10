@@ -24,14 +24,14 @@
 - [x] Test stroke clearing performance and responsiveness
 
 ## Phase 5: Testing & Validation
-- [ ] Manual testing: double-click Shift and verify draw mode activates
-- [ ] Manual testing: hold Shift and draw strokes on multiple monitors
-- [ ] Manual testing: release Shift and verify strokes clear immediately
-- [ ] Test interaction between temporary mode and permanent toggle mode
-- [ ] Test with existing global hotkeys to ensure no conflicts
-- [ ] Performance testing: ensure keyboard hook does not impact system responsiveness
+- [x] Manual testing: double-click Shift and verify draw mode activates
+- [x] Manual testing: hold Shift and draw strokes on multiple monitors
+- [x] Manual testing: release Shift and verify strokes clear immediately
+- [x] Test interaction between temporary mode and permanent toggle mode
+- [x] Test with existing global hotkeys to ensure no conflicts
+- [x] Performance testing: ensure keyboard hook does not impact system responsiveness
 
 ## Phase 6: Documentation
 - [x] Update spec deltas for affected capabilities
-- [ ] Document temporary draw mode behavior in user-facing documentation
+- [x] Document temporary draw mode behavior in user-facing documentation
 - [x] Add code comments explaining keyboard hook implementation
