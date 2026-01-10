@@ -56,7 +56,7 @@ jobs:
           --self-contained false `
           --output publish/win-x64-framework `
           -p:PublishSingleFile=true `
-          -p:PublishReadyToRun=true `
+          -p:PublishReadyToRun=false `
           -p:DebugType=none `
           -p:DebugSymbols=false
           
