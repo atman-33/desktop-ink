@@ -7,3 +7,4 @@ rem Build solution (Release)
 dotnet build desktop-ink.slnx -c Release %*
 
 popd
+pause
