@@ -13,9 +13,9 @@
         WindowStartupLocation="Manual">
     <Border Background="#AA000000" CornerRadius="10" Padding="8" Opacity="0.85">
         <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Button x:Name="ToggleButton" Content="D" Width="36" Height="36" Margin="0,0,0,8" Click="OnToggleClick" ToolTip="Toggle Draw (Ctrl+Alt+D)"/>
-            <Button Content="C" Width="36" Height="36" Margin="0,0,0,8" Click="OnClearClick" ToolTip="Clear (Ctrl+Alt+C)"/>
-            <Button Content="Q" Width="36" Height="36" Click="OnQuitClick" ToolTip="Quit (Ctrl+Alt+Q)"/>
+            <Button x:Name="ToggleButton" Content="D" Width="36" Height="36" Margin="0,0,0,8" Click="OnToggleClick" ToolTip="Toggle Draw (Win+Shift+D)"/>
+            <Button Content="C" Width="36" Height="36" Margin="0,0,0,8" Click="OnClearClick" ToolTip="Clear (Win+Shift+C)"/>
+            <Button Content="Q" Width="36" Height="36" Click="OnQuitClick" ToolTip="Quit (Win+Shift+Q)"/>
         </StackPanel>
     </Border>
 </Window>
