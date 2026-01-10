@@ -21,6 +21,8 @@ internal static class Win32
 
     internal const uint ModAlt = 0x0001;
     internal const uint ModControl = 0x0002;
+    internal const uint ModShift = 0x0004;
+    internal const uint ModWin = 0x0008;
 
     internal const uint SwpNoSize = 0x0001;
     internal const uint SwpNoMove = 0x0002;

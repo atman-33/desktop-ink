@@ -96,9 +96,9 @@ public partial class MainWindow : Window
         }
 
         var ok = true;
-        ok &= Win32.RegisterHotKey(_hwnd, HotkeyToggleDraw, Win32.ModControl | Win32.ModAlt, (uint)KeyInterop.VirtualKeyFromKey(Key.D));
-        ok &= Win32.RegisterHotKey(_hwnd, HotkeyClearAll, Win32.ModControl | Win32.ModAlt, (uint)KeyInterop.VirtualKeyFromKey(Key.C));
-        ok &= Win32.RegisterHotKey(_hwnd, HotkeyQuit, Win32.ModControl | Win32.ModAlt, (uint)KeyInterop.VirtualKeyFromKey(Key.Q));
+        ok &= Win32.RegisterHotKey(_hwnd, HotkeyToggleDraw, Win32.ModWin | Win32.ModShift, (uint)KeyInterop.VirtualKeyFromKey(Key.D));
+        ok &= Win32.RegisterHotKey(_hwnd, HotkeyClearAll, Win32.ModWin | Win32.ModShift, (uint)KeyInterop.VirtualKeyFromKey(Key.C));
+        ok &= Win32.RegisterHotKey(_hwnd, HotkeyQuit, Win32.ModWin | Win32.ModShift, (uint)KeyInterop.VirtualKeyFromKey(Key.Q));
         return ok;
     }
 
