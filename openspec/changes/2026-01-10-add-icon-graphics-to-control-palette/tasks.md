@@ -29,8 +29,8 @@
 - [x] Test icons remain clear at default palette size (56×160px window)
 - [x] Verify no pixelation or rendering artifacts
 - [x] Confirm tooltips still function correctly with icon content
-- [ ] Test on high DPI displays to ensure vector scaling works properly
-- [ ] Verify hover and click interactions remain responsive
+- [x] Test on high DPI displays to ensure vector scaling works properly
+- [x] Verify hover and click interactions remain responsive
 
 ## 5. Code Review
 - [x] Review XAML for consistency and maintainability
