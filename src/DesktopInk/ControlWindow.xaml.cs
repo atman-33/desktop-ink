@@ -12,6 +12,7 @@ public partial class ControlWindow : Window
     private const int HotkeyQuit = 3;
 
     private readonly OverlayManager _overlayManager;
+    private readonly KeyboardHookManager _keyboardHook;
 
     private HwndSource? _hwndSource;
     private IntPtr _hwnd;
@@ -19,6 +20,7 @@ public partial class ControlWindow : Window
     public ControlWindow(OverlayManager overlayManager)
     {
         _overlayManager = overlayManager;
+        _keyboardHook = new KeyboardHookManager();
 
         InitializeComponent();
 
@@ -51,6 +53,18 @@ public partial class ControlWindow : Window
                 "DesktopInk",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
+        }
+
+        // Install keyboard hook for temporary draw mode
+        try
+        {
+            _keyboardHook.TemporaryModeActivated += OnTemporaryModeActivated;
+            _keyboardHook.TemporaryModeDeactivated += OnTemporaryModeDeactivated;
+            _keyboardHook.Install();
+        }
+        catch (Exception ex)
+        {
+            AppLog.Error("Failed to install keyboard hook for temporary draw mode", ex);
         }
     }
 
@@ -127,11 +141,25 @@ public partial class ControlWindow : Window
     {
         UnregisterHotkeys();
 
+        _keyboardHook.TemporaryModeActivated -= OnTemporaryModeActivated;
+        _keyboardHook.TemporaryModeDeactivated -= OnTemporaryModeDeactivated;
+        _keyboardHook.Dispose();
+
         if (_hwndSource is not null)
         {
             _hwndSource.RemoveHook(WndProc);
             _hwndSource = null;
         }
+    }
+
+    private void OnTemporaryModeActivated(object? sender, EventArgs e)
+    {
+        _overlayManager.ActivateTemporaryDrawMode();
+    }
+
+    private void OnTemporaryModeDeactivated(object? sender, EventArgs e)
+    {
+        _overlayManager.DeactivateTemporaryDrawMode();
     }
 
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)

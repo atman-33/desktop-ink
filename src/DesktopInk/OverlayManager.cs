@@ -10,6 +10,7 @@ public sealed class OverlayManager : IDisposable
 {
     private readonly List<OverlayWindow> _overlays = new();
     private OverlayMode _mode = OverlayMode.PassThrough;
+    private bool _isTemporaryDrawMode;
     private bool _isDisposed;
 
     public void ShowOverlays()
@@ -65,7 +66,7 @@ public sealed class OverlayManager : IDisposable
         foreach (var monitor in MonitorEnumerator.GetMonitors())
         {
             var overlay = new OverlayWindow(monitor.BoundsPx, monitor.DpiX, monitor.DpiY);
-            overlay.SetMode(_mode);
+            overlay.SetMode(GetEffectiveMode(), _isTemporaryDrawMode);
             overlay.Show();
             _overlays.Add(overlay);
         }
@@ -82,8 +83,50 @@ public sealed class OverlayManager : IDisposable
 
         foreach (var overlay in _overlays.ToList())
         {
-            overlay.SetMode(_mode);
+            overlay.SetMode(GetEffectiveMode(), _isTemporaryDrawMode);
         }
+    }
+
+    public void ActivateTemporaryDrawMode()
+    {
+        if (_isTemporaryDrawMode)
+        {
+            return;
+        }
+
+        _isTemporaryDrawMode = true;
+        AppLog.Info("OverlayManager: Temporary draw mode activated.");
+
+        foreach (var overlay in _overlays.ToList())
+        {
+            overlay.SetMode(OverlayMode.Draw, isTemporary: true);
+        }
+    }
+
+    public void DeactivateTemporaryDrawMode()
+    {
+        if (!_isTemporaryDrawMode)
+        {
+            return;
+        }
+
+        _isTemporaryDrawMode = false;
+        AppLog.Info("OverlayManager: Temporary draw mode deactivated.");
+
+        // Clear all strokes when exiting temporary mode
+        ClearAll();
+
+        // Return to the permanent mode state
+        foreach (var overlay in _overlays.ToList())
+        {
+            overlay.SetMode(_mode, isTemporary: false);
+        }
+    }
+
+    private OverlayMode GetEffectiveMode()
+    {
+        // Temporary mode takes precedence
+        return _isTemporaryDrawMode ? OverlayMode.Draw : _mode;
     }
 
     public void ClearAll()

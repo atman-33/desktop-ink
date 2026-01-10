@@ -30,6 +30,7 @@ internal static class AppLog
 
     private static void Write(string level, string message)
     {
+#if DEBUG
         try
         {
             var path = LogPath;
@@ -46,5 +47,6 @@ internal static class AppLog
         {
             // Never crash due to logging.
         }
+#endif
     }
 }

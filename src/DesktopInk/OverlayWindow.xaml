@@ -20,7 +20,8 @@
                 Background="#AA000000"
                 Padding="8,4"
                 Visibility="Collapsed">
-            <TextBlock Text="DRAW"
+            <TextBlock x:Name="IndicatorText"
+                       Text="DRAW"
                        Foreground="#FFFF3B3B"
                        FontWeight="SemiBold"
                        FontSize="14"/>

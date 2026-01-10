@@ -19,6 +19,16 @@ internal static class Win32
 
     internal const int MaNoActivate = 3;
 
+    // Keyboard hook constants
+    internal const int WhKeyboardLl = 13;
+    internal const int WmKeydown = 0x0100;
+    internal const int WmKeyup = 0x0101;
+    internal const int WmSyskeydown = 0x0104;
+    internal const int WmSyskeyup = 0x0105;
+    internal const int VkShift = 0x10;
+    internal const int VkLShift = 0xA0;
+    internal const int VkRShift = 0xA1;
+
     internal const uint ModAlt = 0x0001;
     internal const uint ModControl = 0x0002;
     internal const uint ModShift = 0x0004;
@@ -51,6 +61,35 @@ internal static class Win32
 
     [DllImport("user32.dll")]
     internal static extern uint GetDpiForWindow(IntPtr hWnd);
+
+    // Keyboard hook types and functions
+    internal delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    internal static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+    [DllImport("user32.dll")]
+    internal static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern IntPtr GetModuleHandle(string? lpModuleName);
+
+    [DllImport("user32.dll")]
+    internal static extern int GetDoubleClickTime();
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct KbdllHookStruct
+    {
+        public int VkCode;
+        public int ScanCode;
+        public int Flags;
+        public int Time;
+        public IntPtr DwExtraInfo;
+    }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct Rect

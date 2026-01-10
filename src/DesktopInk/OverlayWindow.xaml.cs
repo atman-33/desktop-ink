@@ -41,16 +41,17 @@ public partial class OverlayWindow : Window
         MouseLeftButtonUp += OnMouseLeftButtonUp;
     }
 
-    public void SetMode(OverlayMode mode)
+    public void SetMode(OverlayMode mode, bool isTemporary = false)
     {
         _mode = mode;
 
-        AppLog.Info($"OverlayWindow SetMode hwnd=0x{_hwnd.ToInt64():X} mode={_mode}");
+        AppLog.Info($"OverlayWindow SetMode hwnd=0x{_hwnd.ToInt64():X} mode={_mode} isTemporary={isTemporary}");
 
         if (_mode == OverlayMode.Draw)
         {
             SetClickThrough(false);
             IndicatorHost.Visibility = Visibility.Visible;
+            IndicatorText.Text = isTemporary ? "DRAW (TEMP)" : "DRAW";
         }
         else
         {

@@ -1,27 +1,27 @@
 # Implementation Tasks
 
 ## Phase 1: Keyboard Hook Infrastructure
-- [ ] Research and implement low-level keyboard hook using WPF/Win32 interop
-- [ ] Add keyboard event capture for Shift key press/release events
-- [ ] Implement double-click detection logic with system double-click time threshold
-- [ ] Add tests for double-click pattern detection
+- [x] Research and implement low-level keyboard hook using WPF/Win32 interop
+- [x] Add keyboard event capture for Shift key press/release events
+- [x] Implement double-click detection logic with system double-click time threshold
+- [x] Add tests for double-click pattern detection
 
 ## Phase 2: Temporary Mode State Management
-- [ ] Add `IsTemporaryDrawMode` state property to distinguish from permanent toggle
-- [ ] Implement temporary mode activation logic on Shift double-click + hold
-- [ ] Implement temporary mode deactivation logic on Shift release
-- [ ] Add state tracking for Shift key hold duration
+- [x] Add `IsTemporaryDrawMode` state property to distinguish from permanent toggle
+- [x] Implement temporary mode activation logic on Shift double-click + hold
+- [x] Implement temporary mode deactivation logic on Shift release
+- [x] Add state tracking for Shift key hold duration
 
 ## Phase 3: Mode Integration
-- [ ] Integrate temporary draw mode with existing overlay window input behavior
-- [ ] Ensure temporary mode works across all monitors (multi-monitor support)
-- [ ] Update mode feedback to indicate temporary vs permanent draw mode (if needed)
-- [ ] Ensure temporary mode takes precedence over permanent draw mode
+- [x] Integrate temporary draw mode with existing overlay window input behavior
+- [x] Ensure temporary mode works across all monitors (multi-monitor support)
+- [x] Update mode feedback to indicate temporary vs permanent draw mode (if needed)
+- [x] Ensure temporary mode takes precedence over permanent draw mode
 
 ## Phase 4: Auto-Clear on Release
-- [ ] Implement automatic stroke clearing when Shift is released
-- [ ] Ensure all strokes across all monitors are cleared
-- [ ] Test stroke clearing performance and responsiveness
+- [x] Implement automatic stroke clearing when Shift is released
+- [x] Ensure all strokes across all monitors are cleared
+- [x] Test stroke clearing performance and responsiveness
 
 ## Phase 5: Testing & Validation
 - [ ] Manual testing: double-click Shift and verify draw mode activates
@@ -32,6 +32,6 @@
 - [ ] Performance testing: ensure keyboard hook does not impact system responsiveness
 
 ## Phase 6: Documentation
-- [ ] Update spec deltas for affected capabilities
+- [x] Update spec deltas for affected capabilities
 - [ ] Document temporary draw mode behavior in user-facing documentation
-- [ ] Add code comments explaining keyboard hook implementation
+- [x] Add code comments explaining keyboard hook implementation
