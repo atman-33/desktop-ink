@@ -1,8 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using DesktopInk.Infrastructure;
 
-namespace DesktopInk;
+namespace DesktopInk.Core;
 
 internal sealed class KeyboardHookManager : IDisposable
 {

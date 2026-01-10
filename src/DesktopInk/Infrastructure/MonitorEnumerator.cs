@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace DesktopInk;
+namespace DesktopInk.Infrastructure;
 
 internal static class MonitorEnumerator
 {

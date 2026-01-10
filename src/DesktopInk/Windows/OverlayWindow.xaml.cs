@@ -4,8 +4,10 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using DesktopInk.Core;
+using DesktopInk.Infrastructure;
 
-namespace DesktopInk;
+namespace DesktopInk.Windows;
 
 public partial class OverlayWindow : Window
 {

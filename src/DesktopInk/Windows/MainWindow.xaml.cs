@@ -3,8 +3,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Interop;
+using DesktopInk.Infrastructure;
 
-namespace DesktopInk;
+namespace DesktopInk.Windows;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

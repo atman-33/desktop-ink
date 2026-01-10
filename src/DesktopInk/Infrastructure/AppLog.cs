@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace DesktopInk;
+namespace DesktopInk.Infrastructure;
 
 internal static class AppLog
 {

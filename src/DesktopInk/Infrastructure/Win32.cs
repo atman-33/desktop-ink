@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace DesktopInk;
+namespace DesktopInk.Infrastructure;
 
 internal static class Win32
 {

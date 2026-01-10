@@ -1,4 +1,7 @@
 ﻿using System.Windows;
+using DesktopInk.Core;
+using DesktopInk.Infrastructure;
+using DesktopInk.Windows;
 
 namespace DesktopInk;
 

@@ -3,8 +3,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using DesktopInk.Core;
+using DesktopInk.Infrastructure;
 
-namespace DesktopInk;
+namespace DesktopInk.Windows;
 
 public partial class ControlWindow : Window
 {

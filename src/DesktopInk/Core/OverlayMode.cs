@@ -1,4 +1,4 @@
-namespace DesktopInk;
+namespace DesktopInk.Core;
 
 public enum OverlayMode
 {

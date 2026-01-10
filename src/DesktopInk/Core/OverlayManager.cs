@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using DesktopInk.Infrastructure;
+using DesktopInk.Windows;
 using Microsoft.Win32;
 
-namespace DesktopInk;
+namespace DesktopInk.Core;
 
 public sealed class OverlayManager : IDisposable
 {
