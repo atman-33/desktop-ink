@@ -10,9 +10,9 @@ internal sealed class KeyboardHookManager : IDisposable
     private IntPtr _hookId = IntPtr.Zero;
     private Win32.LowLevelKeyboardProc? _hookProc;
     private bool _isDisposed;
-    private DateTime _lastShiftPressTime;
-    private DateTime _lastShiftReleaseTime;
-    private bool _isShiftHeld;
+    private DateTime _lastAltPressTime;
+    private DateTime _lastAltReleaseTime;
+    private bool _isAltHeld;
     private bool _waitingForSecondPress;
     private readonly int _doubleClickThreshold;
 
@@ -55,33 +55,33 @@ internal sealed class KeyboardHookManager : IDisposable
         {
             var kbd = Marshal.PtrToStructure<Win32.KbdllHookStruct>(lParam);
             var vkCode = kbd.VkCode;
-            if (vkCode == Win32.VkLShift || vkCode == Win32.VkRShift)
+            if (vkCode == Win32.VkLMenu || vkCode == Win32.VkRMenu)
             {
                 var isKeyDown = wParam == (IntPtr)Win32.WmKeydown || wParam == (IntPtr)Win32.WmSyskeydown;
                 var isKeyUp = wParam == (IntPtr)Win32.WmKeyup || wParam == (IntPtr)Win32.WmSyskeyup;
-                AppLog.Info($"KBHook: Shift vk=0x{vkCode:X2} down={isKeyDown} up={isKeyUp} held={_isShiftHeld} wait={_waitingForSecondPress}");
-                if (isKeyDown) HandleShiftPress();
-                else if (isKeyUp) HandleShiftRelease();
+                AppLog.Info($"KBHook: Alt vk=0x{vkCode:X2} down={isKeyDown} up={isKeyUp} held={_isAltHeld} wait={_waitingForSecondPress}");
+                if (isKeyDown) HandleAltPress();
+                else if (isKeyUp) HandleAltRelease();
             }
         }
         return Win32.CallNextHookEx(_hookId, nCode, wParam, lParam);
     }
 
-    private void HandleShiftPress()
+    private void HandleAltPress()
     {
         var now = DateTime.UtcNow;
-        if (_isShiftHeld)
+        if (_isAltHeld)
         {
-            AppLog.Info("KBHook: Shift press ignored (already held).");
+            AppLog.Info("KBHook: Alt press ignored (already held).");
             return;
         }
         if (_waitingForSecondPress)
         {
-            var timeSinceRelease = (now - _lastShiftReleaseTime).TotalMilliseconds;
+            var timeSinceRelease = (now - _lastAltReleaseTime).TotalMilliseconds;
             AppLog.Info($"KBHook: 2nd press. Time={timeSinceRelease:F1}ms Thresh={_doubleClickThreshold}ms");
             if (timeSinceRelease <= _doubleClickThreshold)
             {
-                _isShiftHeld = true;
+                _isAltHeld = true;
                 _waitingForSecondPress = false;
                 TemporaryModeActivated?.Invoke(this, EventArgs.Empty);
                 AppLog.Info("KBHook: TempMode ACTIVATED.");
@@ -89,30 +89,30 @@ internal sealed class KeyboardHookManager : IDisposable
             else
             {
                 _waitingForSecondPress = false;
-                _lastShiftPressTime = now;
+                _lastAltPressTime = now;
                 AppLog.Info("KBHook: Too slow, reset.");
             }
         }
         else
         {
-            _lastShiftPressTime = now;
-            AppLog.Info("KBHook: First Shift press.");
+            _lastAltPressTime = now;
+            AppLog.Info("KBHook: First Alt press.");
         }
     }
 
-    private void HandleShiftRelease()
+    private void HandleAltRelease()
     {
         var now = DateTime.UtcNow;
-        if (_isShiftHeld)
+        if (_isAltHeld)
         {
-            _isShiftHeld = false;
+            _isAltHeld = false;
             _waitingForSecondPress = false;
             TemporaryModeDeactivated?.Invoke(this, EventArgs.Empty);
             AppLog.Info("KBHook: TempMode DEACTIVATED.");
         }
         else if (!_waitingForSecondPress)
         {
-            _lastShiftReleaseTime = now;
+            _lastAltReleaseTime = now;
             _waitingForSecondPress = true;
             AppLog.Info("KBHook: Released, waiting for 2nd press...");
         }
