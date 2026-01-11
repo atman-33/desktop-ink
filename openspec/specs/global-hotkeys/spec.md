@@ -23,17 +23,23 @@ When the user toggles modes via `Win+Shift+D`, the system SHALL switch between d
 - **THEN** the overlay enters draw mode and starts receiving pointer input.
 
 ### Requirement: Temporary draw mode via Shift double-click and hold
-The system SHALL activate a temporary draw mode when the user double-clicks the Shift key and holds it down, and SHALL deactivate temporary draw mode when the Shift key is released.
+The system SHALL activate a temporary draw mode when the user double-clicks the Alt key and holds it down, and SHALL deactivate temporary draw mode when the Alt key is released.
 
-#### Scenario: Activate temporary draw mode with Shift double-click and hold
+**Changed from:** Shift double-click and hold → Alt double-click and hold
+
+#### Scenario: Activate temporary draw mode with Alt double-click and hold
 - **GIVEN** the application is running in any mode
-- **WHEN** the user double-clicks the Shift key (two rapid presses within system double-click threshold) and holds it down
+- **WHEN** the user double-clicks the Alt key (two rapid presses within system double-click threshold) and holds it down
 - **THEN** temporary draw mode is activated and the overlay starts receiving pointer input.
 
-#### Scenario: Deactivate temporary draw mode on Shift release
-- **GIVEN** temporary draw mode is active (Shift is being held)
-- **WHEN** the user releases the Shift key
+**Changed from:** User double-clicks the Shift key → User double-clicks the Alt key
+
+#### Scenario: Deactivate temporary draw mode on Alt release
+- **GIVEN** temporary draw mode is active (Alt is being held)
+- **WHEN** the user releases the Alt key
 - **THEN** temporary draw mode is deactivated and the overlay returns to pass-through mode.
+
+**Changed from:** Shift is being held / releases the Shift key → Alt is being held / releases the Alt key
 
 ### Requirement: Temporary mode independence from permanent toggle
 The temporary draw mode SHALL work independently from the permanent draw mode toggle (`Win+Shift+D`), and temporary mode SHALL take precedence when both are active.

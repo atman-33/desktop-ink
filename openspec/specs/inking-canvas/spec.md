@@ -45,3 +45,36 @@ When temporary draw mode is deactivated (Shift key released), the system SHALL a
 - **WHEN** the user releases the Shift key
 - **THEN** all strokes across all monitors are cleared simultaneously.
 
+### Requirement: Constrained straight line drawing with Shift modifier
+When drawing in draw mode (permanent or temporary), the system SHALL constrain strokes to straight horizontal or vertical lines when the user holds the Shift key during a drag gesture.
+
+#### Scenario: Draw horizontal straight line with Shift held
+- **GIVEN** the overlay is in draw mode
+- **WHEN** the user holds Shift and performs a drag gesture where the horizontal distance is greater than or equal to the vertical distance
+- **THEN** a horizontal straight line is rendered from the drag start point to the current mouse position (Y coordinate constrained to start point Y).
+
+#### Scenario: Draw vertical straight line with Shift held
+- **GIVEN** the overlay is in draw mode
+- **WHEN** the user holds Shift and performs a drag gesture where the vertical distance is greater than the horizontal distance
+- **THEN** a vertical straight line is rendered from the drag start point to the current mouse position (X coordinate constrained to start point X).
+
+#### Scenario: Transition from freehand to constrained mid-stroke
+- **GIVEN** the user is drawing a freehand stroke (left button held, Shift not pressed)
+- **WHEN** the user presses Shift while continuing to drag
+- **THEN** the stroke transitions to a straight line from the original start point to the current constrained position, and intermediate freehand points are removed.
+
+#### Scenario: Transition from constrained to freehand mid-stroke
+- **GIVEN** the user is drawing a constrained straight line (left button held, Shift pressed)
+- **WHEN** the user releases Shift while continuing to drag
+- **THEN** the stroke continues as freehand from the last constrained position, and subsequent mouse movements add points normally.
+
+#### Scenario: Straight line constraint works in temporary draw mode
+- **GIVEN** temporary draw mode is active (Alt held)
+- **WHEN** the user holds Shift and performs a drag gesture
+- **THEN** straight line constraint applies as in permanent draw mode.
+
+#### Scenario: Shift modifier does not interfere with hotkeys
+- **GIVEN** the application is running
+- **WHEN** the user presses Win+Shift+D, Win+Shift+C, or Win+Shift+Q
+- **THEN** the corresponding hotkey action is executed (toggle draw mode, clear all, quit) without triggering straight line constraint.
+

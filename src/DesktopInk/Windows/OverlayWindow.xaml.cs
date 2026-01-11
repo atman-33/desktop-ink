@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -22,6 +23,7 @@ public partial class OverlayWindow : Window
     private OverlayMode _mode = OverlayMode.PassThrough;
     private bool _isDrawing;
     private Polyline? _activeStroke;
+    private System.Windows.Point _strokeStartPoint;
 
     internal OverlayWindow(Win32.Rect boundsPx, uint dpiX, uint dpiY)
     {
@@ -246,6 +248,7 @@ public partial class OverlayWindow : Window
         _activeStroke = CreateStroke();
 
         var point = e.GetPosition(StrokeCanvas);
+        _strokeStartPoint = point;
         _activeStroke.Points.Add(point);
         StrokeCanvas.Children.Add(_activeStroke);
 
@@ -267,6 +270,22 @@ public partial class OverlayWindow : Window
         }
 
         var point = e.GetPosition(StrokeCanvas);
+        
+        // Check if Shift key is held for straight line constraint
+        var isShiftHeld = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
+        
+        if (isShiftHeld)
+        {
+            // Apply straight line constraint (horizontal or vertical)
+            point = ApplyStraightLineConstraint(point);
+            
+            // Keep only start point and current constrained point
+            if (_activeStroke.Points.Count > 1)
+            {
+                _activeStroke.Points.RemoveAt(_activeStroke.Points.Count - 1);
+            }
+        }
+        
         _activeStroke.Points.Add(point);
 
         if ((_activeStroke.Points.Count % 50) == 0)
@@ -309,6 +328,35 @@ public partial class OverlayWindow : Window
         _isDrawing = false;
         _activeStroke = null;
         ReleaseMouseCapture();
+    }
+
+    private System.Windows.Point ApplyStraightLineConstraint(System.Windows.Point currentPoint)
+    {
+        // Calculate the distance and angle from stroke start to current point
+        var dx = currentPoint.X - _strokeStartPoint.X;
+        var dy = currentPoint.Y - _strokeStartPoint.Y;
+        var distance = Math.Sqrt(dx * dx + dy * dy);
+        
+        // Minimum distance threshold to avoid jittery behavior on small drags
+        if (distance < 5.0)
+        {
+            return currentPoint;
+        }
+        
+        // Calculate angle in radians
+        var angle = Math.Atan2(Math.Abs(dy), Math.Abs(dx));
+        
+        // 45-degree threshold: if angle < 45° (π/4), snap to horizontal; otherwise vertical
+        if (angle < Math.PI / 4)
+        {
+            // Horizontal constraint: keep Y, vary X
+            return new System.Windows.Point(currentPoint.X, _strokeStartPoint.Y);
+        }
+        else
+        {
+            // Vertical constraint: keep X, vary Y
+            return new System.Windows.Point(_strokeStartPoint.X, currentPoint.Y);
+        }
     }
 
     private static Polyline CreateStroke()
