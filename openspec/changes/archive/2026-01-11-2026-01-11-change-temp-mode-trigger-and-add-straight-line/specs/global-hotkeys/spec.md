@@ -2,7 +2,7 @@
 
 ## MODIFIED Requirements
 
-### Requirement: Temporary draw mode via Alt double-click and hold
+### Requirement: Temporary draw mode via Shift double-click and hold
 The system SHALL activate a temporary draw mode when the user double-clicks the Alt key and holds it down, and SHALL deactivate temporary draw mode when the Alt key is released.
 
 **Changed from:** Shift double-click and hold → Alt double-click and hold

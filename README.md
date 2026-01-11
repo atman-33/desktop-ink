@@ -12,7 +12,8 @@ A lightweight, always-on-top drawing overlay application for Windows that allows
 - **Transparent Overlay**: Draw directly on top of any application
 - **Multiple Drawing Modes**:
   - Permanent Draw Mode: Toggle on/off with hotkey or control palette
-  - Temporary Draw Mode: Quick annotation with Shift double-click + hold
+  - Temporary Draw Mode: Quick annotation with Alt double-click + hold
+- **Straight Line Drawing**: Hold Shift while dragging to constrain strokes to horizontal or vertical lines
 - **Control Palette**: Always-accessible floating control panel
 - **Global Hotkeys**: Control the app from anywhere
 
@@ -54,11 +55,22 @@ When draw mode is active, you can draw ink strokes on any overlay window. Stroke
 
 For quick, temporary annotations:
 
-1. **Double-click the Shift key** rapidly (within system double-click time)
-2. **Hold down the Shift key** while drawing
-3. **Release the Shift key** - all strokes automatically clear and you return to pass-through mode
+1. **Double-click the Alt key** rapidly (within system double-click time)
+2. **Hold down the Alt key** while drawing
+3. **Release the Alt key** - all strokes automatically clear and you return to pass-through mode
 
 This mode is perfect for brief annotations without needing to toggle modes or manually clear strokes.
+
+#### Straight Line Drawing
+
+To draw perfectly horizontal or vertical lines:
+
+1. Enter draw mode (permanent or temporary)
+2. **Hold down the Shift key** while dragging
+3. The stroke will automatically snap to horizontal or vertical based on the drag direction
+4. Release Shift to return to freehand drawing (mid-stroke transitions are supported)
+
+This feature works in both permanent and temporary draw modes.
 
 ### Global Hotkeys
 
