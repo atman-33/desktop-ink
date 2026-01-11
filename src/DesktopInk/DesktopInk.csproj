@@ -7,12 +7,12 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon>Assets\app-icon.ico</ApplicationIcon>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.1</FileVersion>
+    <FileVersion>1.1.0</FileVersion>
     <Product>DesktopInk</Product>
     <Company>atman-33</Company>
-    <Copyright>Copyright ﾂｩ 2026</Copyright>
+    <Copyright>Copyright ・ゑｽｩ 2026</Copyright>
   </PropertyGroup>
   <!-- Publish Configuration for Self-Contained Single File -->
   <PropertyGroup Condition="'$(Configuration)' == 'Release' And '$(RuntimeIdentifier)' != ''">
