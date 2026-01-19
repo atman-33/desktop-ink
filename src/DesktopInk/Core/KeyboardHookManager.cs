@@ -15,9 +15,11 @@ internal sealed class KeyboardHookManager : IDisposable
     private bool _isAltHeld;
     private bool _waitingForSecondPress;
     private readonly int _doubleClickThreshold;
+    private bool _isSKeyHeld;
 
     public event EventHandler? TemporaryModeActivated;
     public event EventHandler? TemporaryModeDeactivated;
+    public event EventHandler? ColorCycleRequested;
 
     public KeyboardHookManager()
     {
@@ -63,6 +65,21 @@ internal sealed class KeyboardHookManager : IDisposable
                 if (isKeyDown) HandleAltPress();
                 else if (isKeyUp) HandleAltRelease();
             }
+            else if (vkCode == Win32.VkS)
+            {
+                var isKeyDown = wParam == (IntPtr)Win32.WmKeydown || wParam == (IntPtr)Win32.WmSyskeydown;
+                var isKeyUp = wParam == (IntPtr)Win32.WmKeyup || wParam == (IntPtr)Win32.WmSyskeyup;
+
+                if (isKeyDown && _isAltHeld && !_isSKeyHeld)
+                {
+                    _isSKeyHeld = true;
+                    ColorCycleRequested?.Invoke(this, EventArgs.Empty);
+                }
+                else if (isKeyUp)
+                {
+                    _isSKeyHeld = false;
+                }
+            }
         }
         return Win32.CallNextHookEx(_hookId, nCode, wParam, lParam);
     }
@@ -107,6 +124,7 @@ internal sealed class KeyboardHookManager : IDisposable
         {
             _isAltHeld = false;
             _waitingForSecondPress = false;
+            _isSKeyHeld = false;
             TemporaryModeDeactivated?.Invoke(this, EventArgs.Empty);
             AppLog.Info("KBHook: TempMode DEACTIVATED.");
         }

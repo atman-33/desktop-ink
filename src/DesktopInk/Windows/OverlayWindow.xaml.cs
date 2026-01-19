@@ -24,6 +24,7 @@ public partial class OverlayWindow : Window
     private bool _isDrawing;
     private Polyline? _activeStroke;
     private System.Windows.Point _strokeStartPoint;
+    private PenColor _penColor = PenColor.Red;
 
     internal OverlayWindow(Win32.Rect boundsPx, uint dpiX, uint dpiY)
     {
@@ -35,7 +36,7 @@ public partial class OverlayWindow : Window
 
         ApplyWpfBoundsFromPx(_boundsPx, _dpiX, _dpiY);
 
-    AppLog.Info($"OverlayWindow ctor boundsPx=({_boundsPx.Left},{_boundsPx.Top}) {_boundsPx.Width}x{_boundsPx.Height} dpi=({_dpiX},{_dpiY})");
+        AppLog.Info($"OverlayWindow ctor boundsPx=({_boundsPx.Left},{_boundsPx.Top}) {_boundsPx.Width}x{_boundsPx.Height} dpi=({_dpiX},{_dpiY})");
 
         SourceInitialized += OnSourceInitialized;
         Closed += OnClosed;
@@ -70,6 +71,11 @@ public partial class OverlayWindow : Window
     public void ClearAll()
     {
         StrokeCanvas.Children.Clear();
+    }
+
+    public void SetPenColor(PenColor color)
+    {
+        _penColor = color;
     }
 
     private void OnSourceInitialized(object? sender, System.EventArgs e)
@@ -245,7 +251,7 @@ public partial class OverlayWindow : Window
         catch { }
 
         _isDrawing = true;
-        _activeStroke = CreateStroke();
+        _activeStroke = CreateStroke(_penColor);
 
         var point = e.GetPosition(StrokeCanvas);
         _strokeStartPoint = point;
@@ -359,16 +365,27 @@ public partial class OverlayWindow : Window
         }
     }
 
-    private static Polyline CreateStroke()
+    private static Polyline CreateStroke(PenColor penColor)
     {
         return new Polyline
         {
-            Stroke = System.Windows.Media.Brushes.Red,
+            Stroke = CreateBrush(penColor),
             StrokeThickness = 3,
             StrokeStartLineCap = PenLineCap.Round,
             StrokeEndLineCap = PenLineCap.Round,
             StrokeLineJoin = PenLineJoin.Round,
             SnapsToDevicePixels = true,
+        };
+    }
+
+    private static System.Windows.Media.Brush CreateBrush(PenColor penColor)
+    {
+        return penColor switch
+        {
+            PenColor.Red => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0x00, 0x00)),
+            PenColor.Blue => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0x00, 0x00, 0xFF)),
+            PenColor.Green => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0x00, 0xFF, 0x00)),
+            _ => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0x00, 0x00)),
         };
     }
 

@@ -14,6 +14,7 @@ A lightweight, always-on-top drawing overlay application for Windows that allows
   - Permanent Draw Mode: Toggle on/off with hotkey or control palette
   - Temporary Draw Mode: Quick annotation with Alt double-click + hold
 - **Straight Line Drawing**: Hold Shift while dragging to constrain strokes to horizontal or vertical lines
+- **Pen Color Cycling**: Cycle through red, blue, and green for new strokes
 - **Control Palette**: Always-accessible floating control panel
 - **Global Hotkeys**: Control the app from anywhere
 
@@ -61,6 +62,8 @@ For quick, temporary annotations:
 
 This mode is perfect for brief annotations without needing to toggle modes or manually clear strokes.
 
+While in temporary draw mode, you can cycle pen colors with `Alt+S`.
+
 #### Straight Line Drawing
 
 To draw perfectly horizontal or vertical lines:
@@ -81,12 +84,14 @@ The following hotkeys work even when Desktop Ink is not focused:
 | `Win+Shift+D` | Toggle permanent draw/pass-through mode |
 | `Win+Shift+C` | Clear all ink strokes from all monitors |
 | `Win+Shift+Q` | Quit the application |
+| `Alt+S` | Cycle pen color (temporary draw mode only) |
 
 ### Control Palette
 
 The control palette provides clickable buttons for:
 
 - **Toggle Draw Mode**: Switch between draw and pass-through mode
+- **Cycle Color**: Switch between red, blue, and green for new strokes
 - **Clear All**: Remove all ink strokes
 - **Quit**: Exit the application
 

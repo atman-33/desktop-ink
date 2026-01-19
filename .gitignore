@@ -26,3 +26,6 @@ BenchmarkDotNet.Artifacts/
 # OS
 Thumbs.db
 Desktop.ini
+
+.github/agents
+.github/prompts/noctis.prompt.md

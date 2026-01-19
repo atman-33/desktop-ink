@@ -14,8 +14,12 @@ public sealed class OverlayManager : IDisposable
     private OverlayMode _mode = OverlayMode.PassThrough;
     private bool _isTemporaryDrawMode;
     private bool _isDisposed;
+    private PenColor _penColor = PenColor.Red;
 
     public event EventHandler<OverlayMode>? ModeChanged;
+    public event EventHandler<PenColor>? PenColorChanged;
+
+    public PenColor CurrentPenColor => _penColor;
 
     public void ShowOverlays()
     {
@@ -71,6 +75,7 @@ public sealed class OverlayManager : IDisposable
         {
             var overlay = new OverlayWindow(monitor.BoundsPx, monitor.DpiX, monitor.DpiY);
             overlay.SetMode(GetEffectiveMode(), _isTemporaryDrawMode);
+            overlay.SetPenColor(_penColor);
             overlay.Show();
             _overlays.Add(overlay);
         }
@@ -145,6 +150,36 @@ public sealed class OverlayManager : IDisposable
         {
             overlay.ClearAll();
         }
+    }
+
+    public void CycleColor()
+    {
+        var nextColor = _penColor switch
+        {
+            PenColor.Red => PenColor.Blue,
+            PenColor.Blue => PenColor.Green,
+            PenColor.Green => PenColor.Red,
+            _ => PenColor.Red,
+        };
+
+        SetPenColor(nextColor);
+    }
+
+    private void SetPenColor(PenColor color)
+    {
+        if (_penColor == color)
+        {
+            return;
+        }
+
+        _penColor = color;
+
+        foreach (var overlay in _overlays.ToList())
+        {
+            overlay.SetPenColor(_penColor);
+        }
+
+        PenColorChanged?.Invoke(this, _penColor);
     }
 
     public void Quit()
