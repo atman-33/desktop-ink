@@ -29,6 +29,9 @@ public partial class ControlWindow : Window
 
         // Subscribe to mode changes for visual feedback
         _overlayManager.ModeChanged += OnModeChanged;
+        _overlayManager.PenColorChanged += OnPenColorChanged;
+
+        UpdateColorCycleButton(_overlayManager.CurrentPenColor);
 
         SourceInitialized += OnSourceInitialized;
         Closed += OnClosed;
@@ -66,6 +69,7 @@ public partial class ControlWindow : Window
         {
             _keyboardHook.TemporaryModeActivated += OnTemporaryModeActivated;
             _keyboardHook.TemporaryModeDeactivated += OnTemporaryModeDeactivated;
+            _keyboardHook.ColorCycleRequested += OnColorCycleRequested;
             _keyboardHook.Install();
         }
         catch (Exception ex)
@@ -148,9 +152,11 @@ public partial class ControlWindow : Window
         UnregisterHotkeys();
 
         _overlayManager.ModeChanged -= OnModeChanged;
+        _overlayManager.PenColorChanged -= OnPenColorChanged;
 
         _keyboardHook.TemporaryModeActivated -= OnTemporaryModeActivated;
         _keyboardHook.TemporaryModeDeactivated -= OnTemporaryModeDeactivated;
+        _keyboardHook.ColorCycleRequested -= OnColorCycleRequested;
         _keyboardHook.Dispose();
 
         if (_hwndSource is not null)
@@ -168,6 +174,11 @@ public partial class ControlWindow : Window
     private void OnTemporaryModeDeactivated(object? sender, EventArgs e)
     {
         _overlayManager.DeactivateTemporaryDrawMode();
+    }
+
+    private void OnColorCycleRequested(object? sender, EventArgs e)
+    {
+        _overlayManager.CycleColor();
     }
 
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -201,9 +212,19 @@ public partial class ControlWindow : Window
         _overlayManager.ToggleMode();
     }
 
+    private void OnColorCycleClick(object sender, RoutedEventArgs e)
+    {
+        _overlayManager.CycleColor();
+    }
+
     private void OnModeChanged(object? sender, OverlayMode mode)
     {
         UpdateToggleButtonAppearance(mode);
+    }
+
+    private void OnPenColorChanged(object? sender, PenColor color)
+    {
+        UpdateColorCycleButton(color);
     }
 
     private void UpdateToggleButtonAppearance(OverlayMode mode)
@@ -211,6 +232,27 @@ public partial class ControlWindow : Window
         // Update button appearance based on current mode using Tag property
         // This allows XAML style triggers to work properly for hover effects
         ToggleButton.Tag = mode.ToString();
+    }
+
+    private void UpdateColorCycleButton(PenColor color)
+    {
+        if (ColorCycleSwatch is null)
+        {
+            return;
+        }
+
+        ColorCycleSwatch.Fill = CreateBrush(color);
+    }
+
+    private static System.Windows.Media.Brush CreateBrush(PenColor color)
+    {
+        return color switch
+        {
+            PenColor.Red => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0x00, 0x00)),
+            PenColor.Blue => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0x00, 0x00, 0xFF)),
+            PenColor.Green => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0x00, 0xFF, 0x00)),
+            _ => new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xFF, 0x00, 0x00)),
+        };
     }
 
     private void OnClearClick(object sender, RoutedEventArgs e)

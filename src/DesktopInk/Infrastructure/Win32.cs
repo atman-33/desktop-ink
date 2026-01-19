@@ -30,6 +30,7 @@ internal static class Win32
     internal const int VkRShift = 0xA1;
     internal const int VkLMenu = 0xA4;
     internal const int VkRMenu = 0xA5;
+    internal const int VkS = 0x53;
 
     internal const uint ModAlt = 0x0001;
     internal const uint ModControl = 0x0002;
