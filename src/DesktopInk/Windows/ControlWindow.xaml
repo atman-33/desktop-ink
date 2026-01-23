@@ -71,7 +71,7 @@
             <Button x:Name="ToggleButton" Width="36" Height="36" Margin="0,0,0,8" 
                     Style="{StaticResource ToggleButtonStyle}"
                     Tag="PassThrough"
-                    Click="OnToggleClick" ToolTip="Toggle Draw (Win+Shift+D)">
+                    Click="OnToggleClick" ToolTip="Toggle Draw (Win+Shift+D)&#x0a;Alt+Double-click for temporary mode">
                 <Viewbox Width="20" Height="20">
                     <Path x:Name="TogglePath" 
                           Data="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" 

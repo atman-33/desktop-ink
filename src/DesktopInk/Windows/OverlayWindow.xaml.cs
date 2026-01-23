@@ -10,7 +10,7 @@ using DesktopInk.Infrastructure;
 
 namespace DesktopInk.Windows;
 
-public partial class OverlayWindow : Window
+public partial class OverlayWindow : Window, IOverlayWindow
 {
     private Win32.Rect _boundsPx;
 
@@ -45,6 +45,8 @@ public partial class OverlayWindow : Window
         MouseMove += OnMouseMove;
         MouseLeftButtonUp += OnMouseLeftButtonUp;
     }
+
+    public Win32.Rect MonitorBoundsPx => _boundsPx;
 
     public void SetMode(OverlayMode mode, bool isTemporary = false)
     {

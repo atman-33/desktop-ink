@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace DesktopInk.Infrastructure;
 
-internal static class Win32
+public static class Win32
 {
     internal static readonly IntPtr HwndTopmost = new(-1);
 
@@ -42,6 +42,8 @@ internal static class Win32
     internal const uint SwpNoZOrder = 0x0004;
     internal const uint SwpNoActivate = 0x0010;
     internal const uint SwpFrameChanged = 0x0020;
+
+    internal const uint MonitorDefaultToNearest = 0x00000002;
 
     [DllImport("user32.dll", SetLastError = true)]
     internal static extern bool SetWindowPos(
@@ -107,6 +109,13 @@ internal static class Win32
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    internal struct Point
+    {
+        public int X;
+        public int Y;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     internal struct MonitorInfo
     {
         public int CbSize;
@@ -122,6 +131,9 @@ internal static class Win32
 
     [DllImport("user32.dll", SetLastError = true)]
     internal static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
+
+    [DllImport("user32.dll")]
+    internal static extern IntPtr MonitorFromPoint(Point pt, uint dwFlags);
 
     internal enum MonitorDpiType
     {

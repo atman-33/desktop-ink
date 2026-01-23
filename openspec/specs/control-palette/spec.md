@@ -54,6 +54,15 @@ The system SHALL allow the user to drag the palette to reposition it.
 - **WHEN** the user drags the palette
 - **THEN** the palette moves to the new location.
 
+### Requirement: Palette determines active draw monitor
+The system SHALL use the control palette's location to determine which monitor is active for drawing.
+
+#### Scenario: Drag palette to switch monitors
+- **GIVEN** the application is in draw mode
+- **WHEN** the user drags the control palette from Monitor A to Monitor B
+- **THEN** drawing becomes disabled on Monitor A (pass-through)
+- **AND** drawing becomes enabled on Monitor B
+
 ### Requirement: Default placement near primary right edge
 On startup, the system SHALL place the palette near the right edge of the primary monitor.
 
@@ -133,4 +142,111 @@ The palette SHALL provide a color cycle button positioned below the Toggle Draw 
 - **WHEN** the user views the button
 - **THEN** the icon clearly represents color or drawing (e.g., circular color swatch, palette icon)
 - **AND** the icon remains clear and unobscured at 16×16px or 20×20px size within the 36×36px button.
+
+### Requirement: Palette button tooltips SHALL include keyboard shortcuts and advanced interactions
+Tooltips for palette buttons SHALL inform users about both primary and secondary interaction methods when applicable, including keyboard shortcuts and advanced interactions.
+
+#### Scenario: Toggle Draw button tooltip reveals temporary mode interaction
+- **GIVEN** the Toggle Draw button is visible
+- **WHEN** the user hovers over the button
+- **THEN** the tooltip displays information about the primary interaction (click to toggle)
+- **AND** the tooltip displays information about the keyboard shortcut (Win+Shift+D)
+- **AND** the tooltip displays information about the Alt+Double-click interaction for temporary mode
+- **AND** all information is clearly readable in a multi-line format
+
+#### Scenario: Tooltip text is concise and formatted
+- **GIVEN** the Toggle Draw button tooltip is displayed
+- **WHEN** the user reads the tooltip
+- **THEN** the text is organized in a clear, multi-line format
+- **AND** the tooltip does not exceed three lines
+- **AND** each line conveys one distinct piece of information
+
+### Requirement: Tooltips SHALL use multi-line formatting for clarity
+When tooltips contain multiple pieces of information, the system SHALL format them as multi-line text for improved readability.
+
+#### Scenario: Toggle Draw tooltip uses line breaks
+- **GIVEN** the Toggle Draw tooltip contains multiple pieces of information
+- **WHEN** the tooltip is displayed
+- **THEN** each distinct piece of information appears on a separate line
+- **AND** line breaks improve visual scanning and comprehension
+
+### Requirement: Control palette responds to system DPI changes
+
+The control palette window SHALL respond to Windows `WM_DPICHANGED` messages to maintain proper rendering when display scaling changes.
+
+#### Scenario: Handle DPI change message
+- **GIVEN** the control palette is displayed on a monitor
+- **WHEN** Windows sends a `WM_DPICHANGED` message (due to display scaling change or monitor transition)
+- **THEN** the control palette updates its internal DPI tracking
+- **AND** the window geometry adjusts appropriately
+
+#### Scenario: Application declares DPI awareness
+- **GIVEN** the application is installed on a Windows 10 system
+- **WHEN** the application starts
+- **THEN** Windows recognizes the application as Per-Monitor V2 DPI aware
+- **AND** the system enables proper DPI scaling behavior
+
+### Requirement: Control palette icons render correctly at all DPI levels
+
+The control palette icons SHALL render clearly and without distortion at all Windows display scaling levels (100%, 125%, 150%, 175%, 200%).
+
+#### Scenario: Icons remain clear after DPI change
+- **GIVEN** the application is running with the control palette visible
+- **WHEN** the user changes the Windows display scaling setting
+- **THEN** the control palette icons update to render correctly at the new DPI
+- **AND** the icons remain clear and properly sized
+
+#### Scenario: Icons scale correctly across monitors with different DPI
+- **GIVEN** the system has multiple monitors with different DPI settings
+- **WHEN** the user drags the control palette from one monitor to another
+- **THEN** the control palette adjusts to the target monitor's DPI
+- **AND** the icons render correctly on the new monitor
+
+#### Scenario: Handle DPI change message
+- **GIVEN** the control palette is displayed on a monitor
+- **WHEN** Windows sends a `WM_DPICHANGED` message (due to display scaling change or monitor transition)
+- **THEN** the control palette updates its internal DPI tracking
+- **AND** the window geometry adjusts appropriately
+
+#### Scenario: Application declares DPI awareness
+- **GIVEN** the application is installed on a Windows 10 system
+- **WHEN** the application starts
+- **THEN** Windows recognizes the application as Per-Monitor V2 DPI aware
+- **AND** the system enables proper DPI scaling behavior
+
+### Requirement: Palette SHALL track its current monitor position
+The control palette SHALL determine which monitor it is currently positioned on based on its center point and SHALL notify the overlay manager when it moves to a different monitor.
+
+#### Scenario: Palette detects monitor during startup
+- **GIVEN** the application is starting and the palette is being positioned
+- **WHEN** the palette window is shown
+- **THEN** the palette calculates which monitor contains its center point
+- **AND** notifies the overlay manager of its current monitor
+
+#### Scenario: Palette detects monitor change during drag
+- **GIVEN** the palette is positioned on monitor A
+- **WHEN** the user drags the palette so its center point moves to monitor B
+- **THEN** the palette detects the monitor change
+- **AND** notifies the overlay manager of the new monitor
+
+#### Scenario: Center point determines monitor assignment
+- **GIVEN** the palette window has a defined position and size
+- **WHEN** the system determines which monitor the palette is on
+- **THEN** the calculation uses the center point of the palette window
+- **AND** uses system APIs (e.g., MonitorFromPoint) to identify the monitor
+
+### Requirement: Palette SHALL provide current monitor to overlay manager on mode changes
+When the user triggers a mode change (toggle or temporary mode), the palette SHALL inform the overlay manager which monitor it is currently on.
+
+#### Scenario: Mode toggle includes monitor information
+- **GIVEN** the palette is positioned on monitor B
+- **WHEN** the user clicks the toggle draw mode button
+- **THEN** the palette calls the overlay manager with the mode toggle command
+- **AND** provides the current monitor (B) as part of the command
+
+#### Scenario: Temporary mode activation includes monitor information
+- **GIVEN** the palette is positioned on monitor A
+- **WHEN** temporary draw mode is activated (e.g., Shift key pressed)
+- **THEN** the palette provides monitor A information to the overlay manager
+- **AND** only monitor A's overlay enters draw mode
 
