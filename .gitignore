@@ -28,4 +28,5 @@ Thumbs.db
 Desktop.ini
 
 .github/agents
-.github/prompts/noctis.prompt.md
+.github/prompts/*
+!.github/prompts/openspec-*
