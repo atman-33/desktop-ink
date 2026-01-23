@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Runtime.InteropServices;
 using DesktopInk.Core;
 using DesktopInk.Infrastructure;
 
@@ -13,12 +14,16 @@ public partial class ControlWindow : Window
     private const int HotkeyToggleDraw = 1;
     private const int HotkeyClearAll = 2;
     private const int HotkeyQuit = 3;
+    private const double LogicalWidth = 56.0;
+    private const double LogicalHeight = 204.0;
 
     private readonly OverlayManager _overlayManager;
     private readonly KeyboardHookManager _keyboardHook;
 
     private HwndSource? _hwndSource;
     private IntPtr _hwnd;
+    private uint _dpiX = 96;
+    private uint _dpiY = 96;
 
     public ControlWindow(OverlayManager overlayManager)
     {
@@ -53,6 +58,12 @@ public partial class ControlWindow : Window
         _hwndSource.AddHook(WndProc);
 
         ApplyToolWindowStyle();
+        var dpi = Win32.GetDpiForWindow(_hwnd);
+        if (dpi != 0)
+        {
+            _dpiX = dpi;
+            _dpiY = dpi;
+        }
         PositionNearPrimaryRightEdge();
 
         if (!TryRegisterHotkeys())
@@ -108,17 +119,21 @@ public partial class ControlWindow : Window
         const int margin = 24;
 
         // Note: we position in physical pixels for predictable placement.
-        var x = workingArea.Right - (int)Width - margin;
+        var widthPx = ScaleToPixels(Width, _dpiX);
+        var heightPx = ScaleToPixels(Height, _dpiY);
+        var x = workingArea.Right - widthPx - margin;
         var y = workingArea.Top + margin;
 
-        Win32.SetWindowPos(
-            _hwnd,
-            Win32.HwndTopmost,
-            x,
-            y,
-            (int)Width,
-            (int)Height,
-            Win32.SwpNoActivate);
+        var boundsPx = new Win32.Rect
+        {
+            Left = x,
+            Top = y,
+            Right = x + widthPx,
+            Bottom = y + heightPx,
+        };
+
+        ApplyBoundsPxToHwnd(boundsPx);
+        ApplyWpfBoundsFromPx(boundsPx, _dpiX, _dpiY);
     }
 
     private bool TryRegisterHotkeys()
@@ -183,28 +198,93 @@ public partial class ControlWindow : Window
 
     private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-        if (msg != Win32.WmHotkey)
+        if (msg == Win32.WmHotkey)
+        {
+            handled = true;
+            var id = wParam.ToInt32();
+
+            switch (id)
+            {
+                case HotkeyToggleDraw:
+                    _overlayManager.ToggleMode();
+                    break;
+                case HotkeyClearAll:
+                    _overlayManager.ClearAll();
+                    break;
+                case HotkeyQuit:
+                    _overlayManager.Quit();
+                    break;
+            }
+
+            return IntPtr.Zero;
+        }
+
+        if (msg != Win32.WmDpichanged)
         {
             return IntPtr.Zero;
         }
 
-        handled = true;
-        var id = wParam.ToInt32();
+        AppLog.Info($"ControlWindow WM_DPICHANGED hwnd=0x{_hwnd.ToInt64():X} wParam=0x{wParam.ToInt64():X} lParam=0x{lParam.ToInt64():X}");
 
-        switch (id)
+        // New DPI is in wParam (LOWORD=x, HIWORD=y).
+        var newDpiX = (uint)(wParam.ToInt32() & 0xFFFF);
+        var newDpiY = (uint)((wParam.ToInt32() >> 16) & 0xFFFF);
+        if (newDpiX == 0) newDpiX = 96;
+        if (newDpiY == 0) newDpiY = 96;
+
+        _dpiX = newDpiX;
+        _dpiY = newDpiY;
+
+        // lParam points to a recommended RECT in physical pixels (position only).
+        var rect = Marshal.PtrToStructure<Win32.Rect>(lParam);
+
+        var newWidthPx = ScaleToPixels(LogicalWidth, newDpiX);
+        var newHeightPx = ScaleToPixels(LogicalHeight, newDpiY);
+        var adjustedRect = new Win32.Rect
         {
-            case HotkeyToggleDraw:
-                _overlayManager.ToggleMode();
-                break;
-            case HotkeyClearAll:
-                _overlayManager.ClearAll();
-                break;
-            case HotkeyQuit:
-                _overlayManager.Quit();
-                break;
-        }
+            Left = rect.Left,
+            Top = rect.Top,
+            Right = rect.Left + newWidthPx,
+            Bottom = rect.Top + newHeightPx,
+        };
 
+        ApplyBoundsPxToHwnd(adjustedRect);
+        ApplyWpfBoundsFromPx(adjustedRect, _dpiX, _dpiY);
+
+        handled = true;
         return IntPtr.Zero;
+    }
+
+    private void ApplyBoundsPxToHwnd(Win32.Rect boundsPx)
+    {
+        if (_hwnd != IntPtr.Zero)
+        {
+            Win32.SetWindowPos(
+                _hwnd,
+                Win32.HwndTopmost,
+                boundsPx.Left,
+                boundsPx.Top,
+                boundsPx.Width,
+                boundsPx.Height,
+                Win32.SwpNoActivate);
+        }
+    }
+
+    private void ApplyWpfBoundsFromPx(Win32.Rect boundsPx, uint dpiX, uint dpiY)
+    {
+        var dx = dpiX == 0 ? 96u : dpiX;
+        var dy = dpiY == 0 ? 96u : dpiY;
+
+        Left = boundsPx.Left * 96.0 / dx;
+        Top = boundsPx.Top * 96.0 / dy;
+        Width = boundsPx.Width * 96.0 / dx;
+        Height = boundsPx.Height * 96.0 / dy;
+    }
+
+    private static int ScaleToPixels(double logicalSize, uint dpi)
+    {
+        var effectiveDpi = dpi == 0 ? 96u : dpi;
+        return (int)Math.Round(logicalSize * effectiveDpi / 96.0);
     }
 
     private void OnToggleClick(object sender, RoutedEventArgs e)

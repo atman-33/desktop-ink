@@ -27,5 +27,10 @@ BenchmarkDotNet.Artifacts/
 Thumbs.db
 Desktop.ini
 
+# Development
+.serena/
+
 .github/agents
-.github/prompts/noctis.prompt.md
+.github/instructions
+.github/prompts/*
+!.github/prompts/openspec-*

@@ -16,6 +16,7 @@ A lightweight, always-on-top drawing overlay application for Windows that allows
 - **Straight Line Drawing**: Hold Shift while dragging to constrain strokes to horizontal or vertical lines
 - **Pen Color Cycling**: Cycle through red, blue, and green for new strokes
 - **Control Palette**: Always-accessible floating control panel
+- **Per-Monitor DPI Support**: Crisp rendering on high-resolution displays and seamless scaling across monitors
 - **Global Hotkeys**: Control the app from anywhere
 
 ## Requirements
