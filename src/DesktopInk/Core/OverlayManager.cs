@@ -10,16 +10,32 @@ namespace DesktopInk.Core;
 
 public sealed class OverlayManager : IDisposable
 {
-    private readonly List<OverlayWindow> _overlays = new();
+    private readonly List<IOverlayWindow> _overlays = new();
+    private readonly Func<IReadOnlyList<MonitorEnumerator.MonitorInfo>> _monitorProvider;
+    private readonly Func<MonitorEnumerator.MonitorInfo, IOverlayWindow> _overlayFactory;
     private OverlayMode _mode = OverlayMode.PassThrough;
     private bool _isTemporaryDrawMode;
     private bool _isDisposed;
     private PenColor _penColor = PenColor.Red;
+    private Win32.Rect? _paletteMonitorBoundsPx;
 
     public event EventHandler<OverlayMode>? ModeChanged;
     public event EventHandler<PenColor>? PenColorChanged;
 
     public PenColor CurrentPenColor => _penColor;
+
+    public OverlayManager()
+        : this(MonitorEnumerator.GetMonitors, monitor => new OverlayWindow(monitor.BoundsPx, monitor.DpiX, monitor.DpiY))
+    {
+    }
+
+    internal OverlayManager(
+        Func<IReadOnlyList<MonitorEnumerator.MonitorInfo>> monitorProvider,
+        Func<MonitorEnumerator.MonitorInfo, IOverlayWindow> overlayFactory)
+    {
+        _monitorProvider = monitorProvider;
+        _overlayFactory = overlayFactory;
+    }
 
     public void ShowOverlays()
     {
@@ -38,7 +54,6 @@ public sealed class OverlayManager : IDisposable
             return;
         }
 
-        // Ensure we refresh on the UI thread.
         _ = System.Windows.Application.Current.Dispatcher.BeginInvoke(RefreshOverlays);
     }
 
@@ -49,9 +64,11 @@ public sealed class OverlayManager : IDisposable
             return;
         }
 
+        IReadOnlyList<MonitorEnumerator.MonitorInfo> monitors;
+
         try
         {
-            var monitors = MonitorEnumerator.GetMonitors();
+            monitors = _monitorProvider();
             AppLog.Info($"RefreshOverlays monitors={monitors.Count} mode={_mode}");
             foreach (var m in monitors)
             {
@@ -61,9 +78,9 @@ public sealed class OverlayManager : IDisposable
         catch (Exception ex)
         {
             AppLog.Error("RefreshOverlays monitor enumeration failed", ex);
+            return;
         }
 
-        // Simple, robust approach: rebuild overlays from current OS monitor topology.
         foreach (var overlay in _overlays.ToList())
         {
             overlay.Close();
@@ -71,34 +88,37 @@ public sealed class OverlayManager : IDisposable
 
         _overlays.Clear();
 
-        foreach (var monitor in MonitorEnumerator.GetMonitors())
+        foreach (var monitor in monitors)
         {
-            var overlay = new OverlayWindow(monitor.BoundsPx, monitor.DpiX, monitor.DpiY);
-            overlay.SetMode(GetEffectiveMode(), _isTemporaryDrawMode);
+            var overlay = _overlayFactory(monitor);
             overlay.SetPenColor(_penColor);
             overlay.Show();
             _overlays.Add(overlay);
         }
+
+        ApplyModeToOverlays();
     }
 
-    public void ToggleMode()
+    public void ToggleMode(Win32.Rect? paletteMonitorBoundsPx = null)
     {
-        SetMode(_mode == OverlayMode.PassThrough ? OverlayMode.Draw : OverlayMode.PassThrough);
+        SetMode(_mode == OverlayMode.PassThrough ? OverlayMode.Draw : OverlayMode.PassThrough, paletteMonitorBoundsPx);
     }
 
-    public void SetMode(OverlayMode mode)
+    public void SetMode(OverlayMode mode, Win32.Rect? paletteMonitorBoundsPx = null)
     {
         _mode = mode;
 
-        foreach (var overlay in _overlays.ToList())
+        if (paletteMonitorBoundsPx.HasValue)
         {
-            overlay.SetMode(GetEffectiveMode(), _isTemporaryDrawMode);
+            _paletteMonitorBoundsPx = paletteMonitorBoundsPx.Value;
         }
+
+        ApplyModeToOverlays();
 
         ModeChanged?.Invoke(this, GetEffectiveMode());
     }
 
-    public void ActivateTemporaryDrawMode()
+    public void ActivateTemporaryDrawMode(Win32.Rect? paletteMonitorBoundsPx = null)
     {
         if (_isTemporaryDrawMode)
         {
@@ -106,17 +126,20 @@ public sealed class OverlayManager : IDisposable
         }
 
         _isTemporaryDrawMode = true;
+
+        if (paletteMonitorBoundsPx.HasValue)
+        {
+            _paletteMonitorBoundsPx = paletteMonitorBoundsPx.Value;
+        }
+
         AppLog.Info("OverlayManager: Temporary draw mode activated.");
 
-        foreach (var overlay in _overlays.ToList())
-        {
-            overlay.SetMode(OverlayMode.Draw, isTemporary: true);
-        }
+        ApplyModeToOverlays();
 
         ModeChanged?.Invoke(this, OverlayMode.Draw);
     }
 
-    public void DeactivateTemporaryDrawMode()
+    public void DeactivateTemporaryDrawMode(Win32.Rect? paletteMonitorBoundsPx = null)
     {
         if (!_isTemporaryDrawMode)
         {
@@ -124,23 +147,117 @@ public sealed class OverlayManager : IDisposable
         }
 
         _isTemporaryDrawMode = false;
+
+        if (paletteMonitorBoundsPx.HasValue)
+        {
+            _paletteMonitorBoundsPx = paletteMonitorBoundsPx.Value;
+        }
+
         AppLog.Info("OverlayManager: Temporary draw mode deactivated.");
 
-        // Clear all strokes when exiting temporary mode
-        ClearAll();
-
-        // Return to the permanent mode state
-        foreach (var overlay in _overlays.ToList())
-        {
-            overlay.SetMode(_mode, isTemporary: false);
-        }
+        ClearPaletteMonitor();
+        ApplyModeToOverlays();
 
         ModeChanged?.Invoke(this, _mode);
     }
 
+    public void UpdatePaletteMonitor(Win32.Rect boundsPx)
+    {
+        if (_paletteMonitorBoundsPx.HasValue && AreBoundsEqual(_paletteMonitorBoundsPx.Value, boundsPx))
+        {
+            return;
+        }
+
+        _paletteMonitorBoundsPx = boundsPx;
+
+        if (_mode == OverlayMode.Draw || _isTemporaryDrawMode)
+        {
+            ApplyModeToOverlays();
+        }
+    }
+
+    private void ApplyModeToOverlays()
+    {
+        if (_isTemporaryDrawMode)
+        {
+            ApplyDrawModeToPaletteOverlay(isTemporary: true);
+            return;
+        }
+
+        if (_mode == OverlayMode.Draw)
+        {
+            ApplyDrawModeToPaletteOverlay(isTemporary: false);
+            return;
+        }
+
+        SetAllPassThrough();
+    }
+
+    private void ApplyDrawModeToPaletteOverlay(bool isTemporary)
+    {
+        if (!_paletteMonitorBoundsPx.HasValue)
+        {
+            AppLog.Info("OverlayManager: Palette monitor unknown; forcing pass-through on all overlays.");
+            SetAllPassThrough();
+            return;
+        }
+
+        var paletteBounds = _paletteMonitorBoundsPx.Value;
+        var matchedOverlay = false;
+
+        foreach (var overlay in _overlays.ToList())
+        {
+            if (AreBoundsEqual(overlay.MonitorBoundsPx, paletteBounds))
+            {
+                overlay.SetMode(OverlayMode.Draw, isTemporary);
+                matchedOverlay = true;
+            }
+            else
+            {
+                overlay.SetMode(OverlayMode.PassThrough, isTemporary: false);
+            }
+        }
+
+        if (!matchedOverlay)
+        {
+            AppLog.Info(
+                $"OverlayManager: No overlay matched palette bounds ({paletteBounds.Left},{paletteBounds.Top}) {paletteBounds.Width}x{paletteBounds.Height}.");
+        }
+    }
+
+    private void SetAllPassThrough()
+    {
+        foreach (var overlay in _overlays.ToList())
+        {
+            overlay.SetMode(OverlayMode.PassThrough, isTemporary: false);
+        }
+    }
+
+    private void ClearPaletteMonitor()
+    {
+        if (!_paletteMonitorBoundsPx.HasValue)
+        {
+            return;
+        }
+
+        var paletteBounds = _paletteMonitorBoundsPx.Value;
+
+        foreach (var overlay in _overlays.ToList().Where(overlay => AreBoundsEqual(overlay.MonitorBoundsPx, paletteBounds)))
+        {
+            overlay.ClearAll();
+        }
+    }
+
+    private static bool AreBoundsEqual(Win32.Rect left, Win32.Rect right)
+    {
+        return left.Left == right.Left
+            && left.Top == right.Top
+            && left.Right == right.Right
+            && left.Bottom == right.Bottom;
+    }
+
     private OverlayMode GetEffectiveMode()
     {
-        // Temporary mode takes precedence
         return _isTemporaryDrawMode ? OverlayMode.Draw : _mode;
     }
 

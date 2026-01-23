@@ -24,6 +24,7 @@ public partial class ControlWindow : Window
     private IntPtr _hwnd;
     private uint _dpiX = 96;
     private uint _dpiY = 96;
+    private Win32.Rect? _currentMonitorBoundsPx;
 
     public ControlWindow(OverlayManager overlayManager)
     {
@@ -65,6 +66,8 @@ public partial class ControlWindow : Window
             _dpiY = dpi;
         }
         PositionNearPrimaryRightEdge();
+        LocationChanged += OnLocationChanged;
+        UpdateMonitorFromCurrentPosition(forceNotify: true);
 
         if (!TryRegisterHotkeys())
         {
@@ -166,6 +169,8 @@ public partial class ControlWindow : Window
     {
         UnregisterHotkeys();
 
+        LocationChanged -= OnLocationChanged;
+
         _overlayManager.ModeChanged -= OnModeChanged;
         _overlayManager.PenColorChanged -= OnPenColorChanged;
 
@@ -183,11 +188,23 @@ public partial class ControlWindow : Window
 
     private void OnTemporaryModeActivated(object? sender, EventArgs e)
     {
+        if (TryGetPaletteMonitorBounds(out var boundsPx))
+        {
+            _overlayManager.ActivateTemporaryDrawMode(boundsPx);
+            return;
+        }
+
         _overlayManager.ActivateTemporaryDrawMode();
     }
 
     private void OnTemporaryModeDeactivated(object? sender, EventArgs e)
     {
+        if (TryGetPaletteMonitorBounds(out var boundsPx))
+        {
+            _overlayManager.DeactivateTemporaryDrawMode(boundsPx);
+            return;
+        }
+
         _overlayManager.DeactivateTemporaryDrawMode();
     }
 
@@ -206,7 +223,14 @@ public partial class ControlWindow : Window
             switch (id)
             {
                 case HotkeyToggleDraw:
-                    _overlayManager.ToggleMode();
+                    if (TryGetPaletteMonitorBounds(out var boundsPx))
+                    {
+                        _overlayManager.ToggleMode(boundsPx);
+                    }
+                    else
+                    {
+                        _overlayManager.ToggleMode();
+                    }
                     break;
                 case HotkeyClearAll:
                     _overlayManager.ClearAll();
@@ -289,7 +313,79 @@ public partial class ControlWindow : Window
 
     private void OnToggleClick(object sender, RoutedEventArgs e)
     {
+        if (TryGetPaletteMonitorBounds(out var boundsPx))
+        {
+            _overlayManager.ToggleMode(boundsPx);
+            return;
+        }
+
         _overlayManager.ToggleMode();
+    }
+
+    private void OnLocationChanged(object? sender, EventArgs e)
+    {
+        UpdateMonitorFromCurrentPosition();
+    }
+
+    private void UpdateMonitorFromCurrentPosition(bool forceNotify = false)
+    {
+        if (!TryGetCurrentMonitorBounds(out var boundsPx))
+        {
+            return;
+        }
+
+        if (!forceNotify && _currentMonitorBoundsPx.HasValue && AreBoundsEqual(_currentMonitorBoundsPx.Value, boundsPx))
+        {
+            return;
+        }
+
+        _currentMonitorBoundsPx = boundsPx;
+        _overlayManager.UpdatePaletteMonitor(boundsPx);
+    }
+
+    private bool TryGetPaletteMonitorBounds(out Win32.Rect boundsPx)
+    {
+        if (_currentMonitorBoundsPx.HasValue)
+        {
+            boundsPx = _currentMonitorBoundsPx.Value;
+            return true;
+        }
+
+        return TryGetCurrentMonitorBounds(out boundsPx);
+    }
+
+    private bool TryGetCurrentMonitorBounds(out Win32.Rect boundsPx)
+    {
+        boundsPx = default;
+
+        if (_hwnd == IntPtr.Zero)
+        {
+            return false;
+        }
+
+        if (!Win32.GetWindowRect(_hwnd, out var rect))
+        {
+            return false;
+        }
+
+        var centerX = rect.Left + (rect.Width / 2);
+        var centerY = rect.Top + (rect.Height / 2);
+        var monitor = Win32.MonitorFromPoint(new Win32.Point { X = centerX, Y = centerY }, Win32.MonitorDefaultToNearest);
+
+        if (monitor == IntPtr.Zero)
+        {
+            return false;
+        }
+
+        return Win32.TryGetMonitorBounds(monitor, out boundsPx);
+    }
+
+    private static bool AreBoundsEqual(Win32.Rect left, Win32.Rect right)
+    {
+        return left.Left == right.Left
+            && left.Top == right.Top
+            && left.Right == right.Right
+            && left.Bottom == right.Bottom;
     }
 
     private void OnColorCycleClick(object sender, RoutedEventArgs e)

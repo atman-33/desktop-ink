@@ -3,22 +3,21 @@
 ## Summary
 Enable drawing mode only on the monitor where the control palette is located, allowing users to interact with applications on other monitors while drawing on the palette's monitor.
 
-## Context
-Currently, when draw mode is activated, all monitors become draw-enabled simultaneously. This prevents users from interacting with applications on other monitors while drawing, limiting the utility of multi-monitor setups. Users want to be able to draw on one monitor while continuing to work on others.
-
-## Motivation
+## Why
 The current behavior forces all monitors into draw mode together, which is inconvenient for multi-monitor workflows. For example:
 - A user presenting on one monitor cannot interact with notes or applications on another monitor during draw mode
 - Developers cannot draw annotations on one screen while continuing to code on another
 - The control palette's location becomes arbitrary since it doesn't affect which monitor is draw-enabled
 
-## Proposal
-Change the draw mode behavior so that only the monitor containing the control palette becomes draw-enabled. The system will:
-1. Track the control palette's current monitor position based on its center point
-2. Enable draw mode only on the overlay for that monitor
-3. Keep all other monitors in pass-through mode
-4. Update the active draw monitor dynamically when the palette is dragged to a different monitor
-5. Apply the same per-monitor logic to temporary draw mode (Shift key hold)
+## What Changes
+- Control palette tracks its current monitor position based on center point
+- Draw mode activates only on the monitor containing the control palette
+- All other monitors remain in pass-through mode for normal application interaction
+- Temporary draw mode follows the same per-monitor logic
+- Palette drag dynamically updates which monitor is draw-enabled
+
+## Context
+Currently, when draw mode is activated, all monitors become draw-enabled simultaneously. This prevents users from interacting with applications on other monitors while drawing, limiting the utility of multi-monitor setups. Users want to be able to draw on one monitor while continuing to work on others.
 
 ## Impact
 ### Affected Capabilities

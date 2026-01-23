@@ -2,7 +2,7 @@
 
 ## Modified Requirements
 
-### Requirement: Draw mode works only on the palette's monitor
+### Requirement: Draw mode works on palette-focused monitor
 In draw mode, the system SHALL allow the user to draw only on the monitor where the control palette is located. Other monitors SHALL remain in pass-through mode, allowing normal interaction with underlying applications.
 
 #### Scenario: Draw only on palette's monitor
@@ -25,7 +25,7 @@ In draw mode, the system SHALL allow the user to draw only on the monitor where 
 - **THEN** only the primary monitor (where the palette is initially positioned) becomes draw-enabled
 - **AND** all other monitors remain in pass-through mode
 
-### Requirement: Pass-through works on all non-palette monitors
+### Requirement: Pass-through works on non-focused monitors
 In draw mode, the system SHALL ensure that all monitors except the palette's monitor remain in pass-through mode and do not interfere with underlying applications.
 
 #### Scenario: Interact with apps on non-palette monitors during draw mode
@@ -34,6 +34,8 @@ In draw mode, the system SHALL ensure that all monitors except the palette's mon
 - **THEN** the underlying application on monitor B receives the input normally
 - **AND** no stroke input is captured on monitor B
 - **AND** the overlay on monitor B does not intercept any user input
+
+## Added Requirements
 
 ### Requirement: Temporary draw mode works only on palette's monitor
 When temporary draw mode is activated (e.g., via Shift key hold), the system SHALL enable drawing only on the monitor where the control palette is located.
