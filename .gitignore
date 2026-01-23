@@ -28,5 +28,6 @@ Thumbs.db
 Desktop.ini
 
 .github/agents
+.github/instructions
 .github/prompts/*
 !.github/prompts/openspec-*
