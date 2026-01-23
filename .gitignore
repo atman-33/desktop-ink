@@ -27,6 +27,9 @@ BenchmarkDotNet.Artifacts/
 Thumbs.db
 Desktop.ini
 
+# Development
+.serena/
+
 .github/agents
 .github/instructions
 .github/prompts/*
