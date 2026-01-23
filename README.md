@@ -61,7 +61,7 @@ For quick, temporary annotations:
 2. **Hold down the Alt key** while drawing
 3. **Release the Alt key** - all strokes automatically clear and you return to pass-through mode
 
-This mode is perfect for brief annotations without needing to toggle modes or manually clear strokes.
+This mode is perfect for brief annotations without needing to toggle modes or manually clear strokes. You can find a reminder for this shortcut in the tooltip of the **Toggle Draw Mode** button on the control palette.
 
 While in temporary draw mode, you can cycle pen colors with `Alt+S`.
 
@@ -91,7 +91,7 @@ The following hotkeys work even when Desktop Ink is not focused:
 
 The control palette provides clickable buttons for:
 
-- **Toggle Draw Mode**: Switch between draw and pass-through mode
+- **Toggle Draw Mode**: Switch between draw and pass-through mode. The tooltip displays the `Win+Shift+D` shortcut and the **Alt+Double-click** hint for temporary draw mode.
 - **Cycle Color**: Switch between red, blue, and green for new strokes
 - **Clear All**: Remove all ink strokes
 - **Quit**: Exit the application
