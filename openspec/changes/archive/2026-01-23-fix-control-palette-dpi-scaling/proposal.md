@@ -1,9 +1,11 @@
 # Proposal: Fix Control Palette DPI Scaling
 
-## Problem
+## Why
+
 The control palette window displays icon rendering issues when the Windows display scaling (DPI) setting is changed. Icons become distorted or improperly sized because ControlWindow does not respond to `WM_DPICHANGED` messages, unlike OverlayWindow which handles DPI changes correctly.
 
-## Background
+### Background
+
 The issue was identified through investigation of icon rendering problems. Key findings:
 
 1. **OverlayWindow handles DPI changes** - The OverlayWindow.xaml.cs implements `WM_DPICHANGED` message handling and properly recalculates window bounds and DPI scaling when the system DPI changes.
@@ -14,7 +16,8 @@ The issue was identified through investigation of icon rendering problems. Key f
 
 4. **No DPI awareness manifest** - The application lacks an app manifest file declaring DPI awareness mode (e.g., Per-Monitor V2), relying on WPF's default DPI handling.
 
-## Proposed Solution
+## What Changes
+
 Implement proper DPI awareness for the control palette by:
 
 1. **Add DPI change handling to ControlWindow** - Implement `WM_DPICHANGED` message processing in ControlWindow.xaml.cs, following the same pattern used in OverlayWindow to track DPI values and adjust window geometry.
@@ -23,18 +26,22 @@ Implement proper DPI awareness for the control palette by:
 
 3. **Update project configuration** - Configure DesktopInk.csproj to include the manifest file.
 
-## Benefits
+### Benefits
+
 - Icons render correctly when display scaling is changed
 - Consistent DPI handling across all application windows
 - Better support for multi-monitor setups with different DPI settings
 - Improved visual quality on high-DPI displays
 
-## Scope
+### Scope
+
 This change modifies the `control-palette` capability to ensure proper DPI scaling behavior.
 
-## Dependencies
+### Dependencies
+
 None - this is a self-contained fix to existing functionality.
 
-## Risks
+### Risks
+
 - Minimal risk - follows the established pattern already proven in OverlayWindow
 - May require testing on various DPI settings and multi-monitor configurations

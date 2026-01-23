@@ -1,12 +1,9 @@
 # control-palette Specification Delta
 
-## Purpose
-This spec delta enhances tooltip requirements for the Control Palette to improve discoverability of advanced interactions.
+## ADDED Requirements
 
-## Requirements
-
-### Requirement: Tooltips SHALL disclose advanced interactions
-Tooltips for palette buttons SHALL inform users about both primary and secondary interaction methods when applicable.
+### Requirement: Palette button tooltips SHALL include keyboard shortcuts and advanced interactions
+Tooltips for palette buttons SHALL inform users about both primary and secondary interaction methods when applicable, including keyboard shortcuts and advanced interactions.
 
 #### Scenario: Toggle Draw button tooltip reveals temporary mode interaction
 - **GIVEN** the Toggle Draw button is visible
@@ -23,7 +20,7 @@ Tooltips for palette buttons SHALL inform users about both primary and secondary
 - **AND** the tooltip does not exceed three lines
 - **AND** each line conveys one distinct piece of information
 
-### Requirement: Multi-line tooltip formatting
+### Requirement: Tooltips SHALL use multi-line formatting for clarity
 When tooltips contain multiple pieces of information, the system SHALL format them as multi-line text for improved readability.
 
 #### Scenario: Toggle Draw tooltip uses line breaks

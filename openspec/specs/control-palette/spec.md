@@ -134,3 +134,74 @@ The palette SHALL provide a color cycle button positioned below the Toggle Draw 
 - **THEN** the icon clearly represents color or drawing (e.g., circular color swatch, palette icon)
 - **AND** the icon remains clear and unobscured at 16×16px or 20×20px size within the 36×36px button.
 
+### Requirement: Palette button tooltips SHALL include keyboard shortcuts and advanced interactions
+Tooltips for palette buttons SHALL inform users about both primary and secondary interaction methods when applicable, including keyboard shortcuts and advanced interactions.
+
+#### Scenario: Toggle Draw button tooltip reveals temporary mode interaction
+- **GIVEN** the Toggle Draw button is visible
+- **WHEN** the user hovers over the button
+- **THEN** the tooltip displays information about the primary interaction (click to toggle)
+- **AND** the tooltip displays information about the keyboard shortcut (Win+Shift+D)
+- **AND** the tooltip displays information about the Alt+Double-click interaction for temporary mode
+- **AND** all information is clearly readable in a multi-line format
+
+#### Scenario: Tooltip text is concise and formatted
+- **GIVEN** the Toggle Draw button tooltip is displayed
+- **WHEN** the user reads the tooltip
+- **THEN** the text is organized in a clear, multi-line format
+- **AND** the tooltip does not exceed three lines
+- **AND** each line conveys one distinct piece of information
+
+### Requirement: Tooltips SHALL use multi-line formatting for clarity
+When tooltips contain multiple pieces of information, the system SHALL format them as multi-line text for improved readability.
+
+#### Scenario: Toggle Draw tooltip uses line breaks
+- **GIVEN** the Toggle Draw tooltip contains multiple pieces of information
+- **WHEN** the tooltip is displayed
+- **THEN** each distinct piece of information appears on a separate line
+- **AND** line breaks improve visual scanning and comprehension
+
+### Requirement: Control palette responds to system DPI changes
+
+The control palette window SHALL respond to Windows `WM_DPICHANGED` messages to maintain proper rendering when display scaling changes.
+
+#### Scenario: Handle DPI change message
+- **GIVEN** the control palette is displayed on a monitor
+- **WHEN** Windows sends a `WM_DPICHANGED` message (due to display scaling change or monitor transition)
+- **THEN** the control palette updates its internal DPI tracking
+- **AND** the window geometry adjusts appropriately
+
+#### Scenario: Application declares DPI awareness
+- **GIVEN** the application is installed on a Windows 10 system
+- **WHEN** the application starts
+- **THEN** Windows recognizes the application as Per-Monitor V2 DPI aware
+- **AND** the system enables proper DPI scaling behavior
+
+### Requirement: Control palette icons render correctly at all DPI levels
+
+The control palette icons SHALL render clearly and without distortion at all Windows display scaling levels (100%, 125%, 150%, 175%, 200%).
+
+#### Scenario: Icons remain clear after DPI change
+- **GIVEN** the application is running with the control palette visible
+- **WHEN** the user changes the Windows display scaling setting
+- **THEN** the control palette icons update to render correctly at the new DPI
+- **AND** the icons remain clear and properly sized
+
+#### Scenario: Icons scale correctly across monitors with different DPI
+- **GIVEN** the system has multiple monitors with different DPI settings
+- **WHEN** the user drags the control palette from one monitor to another
+- **THEN** the control palette adjusts to the target monitor's DPI
+- **AND** the icons render correctly on the new monitor
+
+#### Scenario: Handle DPI change message
+- **GIVEN** the control palette is displayed on a monitor
+- **WHEN** Windows sends a `WM_DPICHANGED` message (due to display scaling change or monitor transition)
+- **THEN** the control palette updates its internal DPI tracking
+- **AND** the window geometry adjusts appropriately
+
+#### Scenario: Application declares DPI awareness
+- **GIVEN** the application is installed on a Windows 10 system
+- **WHEN** the application starts
+- **THEN** Windows recognizes the application as Per-Monitor V2 DPI aware
+- **AND** the system enables proper DPI scaling behavior
+
