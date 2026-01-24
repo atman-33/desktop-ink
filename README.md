@@ -18,6 +18,7 @@ A lightweight, always-on-top drawing overlay application for Windows that allows
 - **Control Palette**: Always-accessible floating control panel
 - **Per-Monitor DPI Support**: Crisp rendering on high-resolution displays and seamless scaling across monitors
 - **Global Hotkeys**: Control the app from anywhere
+- **Update Notifications**: Optional startup prompt when a new GitHub release is available
 
 ## Requirements
 
@@ -37,6 +38,22 @@ A lightweight, always-on-top drawing overlay application for Windows that allows
    ```
 
 ## Usage
+
+### Update Notifications
+
+Desktop Ink checks for new GitHub releases on startup (after a short delay) and shows a modal dialog when an update is available. You can open the download page, remind yourself later, or skip a specific version.
+
+Settings are stored at `%APPDATA%\DesktopInk\settings.json` and can be edited manually:
+
+```json
+{
+   "versionCheck": {
+      "enabled": true,
+      "skippedVersion": null,
+      "lastChecked": "2026-01-24T10:00:00Z"
+   }
+}
+```
 
 ### Starting the Application
 

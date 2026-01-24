@@ -13,7 +13,7 @@
     <FileVersion>1.3.0</FileVersion>
     <Product>DesktopInk</Product>
     <Company>atman-33</Company>
-    <Copyright>Copyright 郢晢ｽｻ郢ｧ謇假ｽｽ・ｽ繝ｻ・ｩ 2026</Copyright>
+    <Copyright>Copyright atman-33 2026</Copyright>
   </PropertyGroup>
   <!-- Publish Configuration for Self-Contained Single File -->
   <PropertyGroup Condition="'$(Configuration)' == 'Release' And '$(RuntimeIdentifier)' != ''">
@@ -24,5 +24,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="Assets\app-icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="10.0.0" />
   </ItemGroup>
 </Project>
