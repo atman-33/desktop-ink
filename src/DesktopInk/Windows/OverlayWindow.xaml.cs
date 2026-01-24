@@ -59,6 +59,7 @@ public partial class OverlayWindow : Window, IOverlayWindow
             SetClickThrough(false);
             IndicatorHost.Visibility = Visibility.Visible;
             IndicatorText.Text = isTemporary ? "DRAW (TEMP)" : "DRAW";
+            IndicatorText.Foreground = CreatePenBrush(_penColor);
         }
         else
         {
@@ -78,6 +79,11 @@ public partial class OverlayWindow : Window, IOverlayWindow
     public void SetPenColor(PenColor color)
     {
         _penColor = color;
+
+        if (_mode == OverlayMode.Draw)
+        {
+            IndicatorText.Foreground = CreatePenBrush(_penColor);
+        }
     }
 
     private void OnSourceInitialized(object? sender, System.EventArgs e)
@@ -371,7 +377,7 @@ public partial class OverlayWindow : Window, IOverlayWindow
     {
         return new Polyline
         {
-            Stroke = CreateBrush(penColor),
+            Stroke = CreatePenBrush(penColor),
             StrokeThickness = 3,
             StrokeStartLineCap = PenLineCap.Round,
             StrokeEndLineCap = PenLineCap.Round,
@@ -380,7 +386,7 @@ public partial class OverlayWindow : Window, IOverlayWindow
         };
     }
 
-    private static System.Windows.Media.Brush CreateBrush(PenColor penColor)
+    private static System.Windows.Media.Brush CreatePenBrush(PenColor penColor)
     {
         return penColor switch
         {
