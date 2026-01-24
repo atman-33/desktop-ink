@@ -135,6 +135,14 @@ public partial class App : System.Windows.Application
 
 	private static string GetCurrentVersion()
 	{
+		// Environment variable override for debugging/testing
+		var overrideVersion = Environment.GetEnvironmentVariable("DESKTOPINK_DEBUG_VERSION");
+		if (!string.IsNullOrWhiteSpace(overrideVersion))
+		{
+			AppLog.Info($"Using debug version from environment: {overrideVersion}");
+			return overrideVersion;
+		}
+
 		try
 		{
 			var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
