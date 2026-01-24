@@ -1,14 +1,14 @@
 # Sync Mode Indicator Color with Pen Color
 
-## Context
+## Why
 The Desktop Ink application displays a mode indicator in the top-left corner of the screen showing "DRAW" or "DRAW (TEMP)" when drawing mode is active. Currently, this indicator text is always displayed in red (`#FFFF3B3B`), regardless of the selected pen color.
 
 Users can cycle through different pen colors (Red, Blue, Green) using the `Win+Shift+C` hotkey. However, the mode indicator color does not reflect the current pen color, which can be confusing for users who want visual feedback about which color they are currently drawing with.
 
-## Goal
+## What Changes
 Synchronize the mode indicator text color with the currently selected pen color to provide clearer visual feedback to users about which pen color is active.
 
-## Approach
+### Implementation
 1. Update the `SetMode` method in `OverlayWindow` to apply the current pen color to the indicator text when entering draw mode
 2. Update the `SetPenColor` method to refresh the indicator text color when the pen color changes while in draw mode
 3. Extract the color-to-brush logic into a reusable method that can be used for both stroke drawing and indicator text
