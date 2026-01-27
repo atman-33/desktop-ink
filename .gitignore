@@ -34,3 +34,4 @@ Desktop.ini
 .github/instructions
 .github/prompts/*
 !.github/prompts/openspec-*
+!.github/prompts/release*
