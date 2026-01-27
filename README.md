@@ -41,7 +41,11 @@ A lightweight, always-on-top drawing overlay application for Windows that allows
 
 ### Update Notifications
 
-Desktop Ink checks for new GitHub releases on startup (after a short delay) and shows a modal dialog when an update is available. You can open the download page, remind yourself later, or skip a specific version.
+Desktop Ink checks for new GitHub releases on startup (after a short delay) and shows a modal dialog when an update is available.
+
+**Note**: On the very first launch after installation, the version check is skipped to establish the current installed version as your baseline. You will only be notified about updates released *after* your initial installation.
+
+You can open the download page, remind yourself later, or skip a specific version.
 
 Settings are stored at `%APPDATA%\DesktopInk\settings.json` and can be edited manually:
 

@@ -41,6 +41,14 @@ public sealed class VersionChecker : IDisposable
         }
     }
 
+    /// <summary>
+    /// Checks for updates against the GitHub API.
+    /// <para>
+    /// On first launch (when LastChecked is null), the check is skipped and the current version
+    /// is set as the baseline SkippedVersion to prevent immediate update notifications.
+    /// </para>
+    /// </summary>
+
     public async Task<VersionCheckResult> CheckForUpdatesAsync(string currentVersion, VersionCheckSettings settings, CancellationToken ct)
     {
         if (!settings.Enabled)
@@ -49,7 +57,15 @@ public sealed class VersionChecker : IDisposable
             return VersionCheckResult.Disabled();
         }
 
-        if (settings.LastChecked.HasValue && DateTime.UtcNow - settings.LastChecked.Value < TimeSpan.FromDays(1))
+        if (!settings.LastChecked.HasValue)
+        {
+            AppLog.Info($"First launch detected. Setting baseline version to '{currentVersion}'.");
+            settings.SkippedVersion = currentVersion;
+            settings.LastChecked = DateTime.UtcNow;
+            return VersionCheckResult.Skipped();
+        }
+
+        if (DateTime.UtcNow - settings.LastChecked.Value < TimeSpan.FromDays(1))
         {
             AppLog.Info("Version check skipped due to daily cache.");
             return VersionCheckResult.Skipped();
